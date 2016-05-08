@@ -9,13 +9,18 @@ def login(request):
     if request.method == "POST" and 'voltar' in request.POST:
         return render(request, 'home.html')
 
-    elif request.method == "POST" and 'submit' in request.POST:
+    elif request.method == "POST" and 'logar' in request.POST:
         form = LoginForm(request.POST)
 
         if form.is_valid():
             user = Usuario()
             user.nome = form.cleaned_data.get('nome')
             user.senha = form.cleaned_data.get('senha')
+            data= Usuario.objects.filter(nome=user.nome)
+            if data.count() == 0:
+                print("Usuario nao cadastrado")
+            for x in data:
+                print(x.senha)
 
     else:
         form = LoginForm()
@@ -26,7 +31,7 @@ def cadastro(request):
     if request.method == "POST" and 'voltar' in request.POST:
         return render(request, 'home.html')
 
-    elif request.method == "POST" and 'submit' in request.POST:
+    elif request.method == "POST" and 'cadastrar' in request.POST:
         form = CadastroForm(request.POST)
 
         if form.is_valid():
