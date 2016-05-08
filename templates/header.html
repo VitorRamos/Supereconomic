@@ -53,8 +53,14 @@
 
 			<div class='container-fluid'>
 			<br><br>
-			   {% block content %}
-			   {% endblock %}
+                {% if user.is_authenticated %}
+                    <p>Bem vindo, {{ user.username }}!!</p>
+                {% else %}
+                    <p>Ainda não fez login ?.</p>
+                {% endif %}
+
+                {% block content %}
+			    {% endblock %}
 			</div>
 		  </div>
 		</div>

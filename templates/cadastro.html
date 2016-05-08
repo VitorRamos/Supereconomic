@@ -9,8 +9,12 @@
         <button type="submit" name="voltar">Voltar</button>
     </form>
 
+    <p></p>
     <p>CLientes Cadastrados</p>
     {% for cliente in clientes %}
         <p>{{cliente.idCliente.nome}} {{cliente.idCliente.senha}} {{ cliente.CPF }}</p>
+    {%  endfor %}
+    {% for cliente in clientes %}
+        <p>{{cliente.username}} {{cliente.password}}</p>
     {%  endfor %}
 {% endblock %}
