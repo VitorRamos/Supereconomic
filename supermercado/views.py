@@ -7,7 +7,6 @@ from forms import *
 def index(request):
     if request.method == "POST" and 'sair' in request.POST:
         auth.logout(request)
-        print("BOOLSHIT")
     return render(request, 'home.html')
 
 
