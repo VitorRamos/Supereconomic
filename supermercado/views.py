@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib import auth
+from django.shortcuts import redirect
 from models import *
 from forms import *
 
@@ -11,6 +12,7 @@ def index(request):
 
 
 def login(request):
+    avisos= []
     if request.method == "POST" and 'voltar' in request.POST:
         return render(request, 'home.html')
 
@@ -20,14 +22,14 @@ def login(request):
         if form.is_valid():
             user = auth.authenticate(username=form.cleaned_data.get('nome'),
                                      password=form.cleaned_data.get('senha'))
-
             if user is not None:
                 if user.is_active:
                     auth.login(request, user)
+                    return render(request, 'home.html')
                 else:
-                    print("The password is valid, but the account has been disabled!")
+                    avisos.append("Essa conta foi desativada.")
             else:
-                print("The username and password were incorrect.")
+                avisos.append("Senha ou usuario incorretos.")
         # sem usar django
         #if form.is_valid():
             # user = Usuario()
@@ -42,10 +44,11 @@ def login(request):
     else:
         form = LoginForm()
 
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'login.html', {'form': form, 'avisos': avisos})
 
 
 def cadastro(request):
+    avisos = []
     if request.method == "POST" and 'voltar' in request.POST:
         return render(request, 'home.html')
 
@@ -60,7 +63,7 @@ def cadastro(request):
                 user.groups.add(grupo)
                 user.save()
             else:
-                print("Usuario ja existe")
+                avisos.append("Usuario ja existe")
 
         #if form.is_valid():
         #sem usar django
@@ -74,8 +77,15 @@ def cadastro(request):
         # cliente.save()
     else:
         form = CadastroForm()
-    return render(request, 'cadastro.html', {'form': form, 'clientes': auth.models.User.objects.all()})
+    return render(request, 'cadastro.html', {'form': form, 'clientes': auth.models.User.objects.all(),
+                                             'avisos': avisos})
 
+
+def favoritos(resquest):
+    return render(resquest, 'favoritos.html')
+
+def produtos(request):
+    return render(request, 'produtos.html')
 
 def sobre(request):
     return render(request, 'sobre.html')

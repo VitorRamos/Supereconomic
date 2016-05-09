@@ -8,4 +8,9 @@
         <button type="submit" name="logar">Logar</button>
         <button type="submit" name="voltar">Voltar</button>
     </form>
+     {% for aviso in avisos %}
+         <div class="alert alert-danger" role="alert">
+            <p>{{aviso}}</p>
+         </div>
+    {%  endfor %}
 {% endblock %}
