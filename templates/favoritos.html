@@ -1,0 +1,10 @@
+{%  extends "header.html" %}
+{% block content %}
+        {% if user.groups.all.0.name == 'Clientes' %}
+             <p>Favoritos</p>
+        {% else  %}
+            <div class="alert alert-danger" role="alert">
+                <p>Não tem permissão</p>
+            </div>
+        {% endif %}
+{% endblock %}
