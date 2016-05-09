@@ -1,5 +1,16 @@
 {%  extends "header.html" %}
 
 {% block content %}
-    <p>Tela Login</p>
+    <h1>Tela Login</h1>
+    <form role="form" action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" name="logar">Logar</button>
+        <button type="submit" name="voltar">Voltar</button>
+    </form>
+     {% for aviso in avisos %}
+         <div class="alert alert-danger" role="alert">
+            <p>{{aviso}}</p>
+         </div>
+    {%  endfor %}
 {% endblock %}

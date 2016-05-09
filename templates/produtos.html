@@ -1,0 +1,13 @@
+{%  extends "header.html" %}
+
+{% block content %}
+
+    {% if user.groups.all.0.name == 'Donos' %}
+        <h1>Produtos</h1>
+
+    {% else %}
+        <div class="alert alert-danger" role="alert">
+            Você não tem permissão.
+        </div>
+    {% endif %}
+{% endblock %}

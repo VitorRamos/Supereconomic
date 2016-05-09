@@ -20,5 +20,7 @@ urlpatterns = [
     url(r'^login/$', login, name='login'),
     url(r'^cadastro/$', cadastro, name='cadastro'),
     url(r'^sobre/$', sobre, name='sobre'),
-    url(r'^$', index, name='index')
+    url(r'^favoritos/$', favoritos, name='favoritos'),
+    url(r'^produtos/$', produtos, name='produtos'),
+    url(r'^$', index, name='index'),
 ]

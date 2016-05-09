@@ -4,7 +4,7 @@ from django.db import models
 
 
 class Usuario(models.Model):
-    idUsuario = models.IntegerField(primary_key=True, auto_created=True)
+    idUsuario = models.AutoField(primary_key=True, auto_created=True)
     nome = models.CharField(max_length=45)
     senha = models.CharField(max_length=45)
 
@@ -20,7 +20,7 @@ class Empresario(models.Model):
 
 
 class Supermercado(models.Model):
-    idSupermercado= models.IntegerField(primary_key=True, auto_created=True)
+    idSupermercado= models.AutoField(primary_key=True, auto_created=True)
     nome= models.CharField(max_length=45)
     localizacao= models.CharField(max_length=255)
 
@@ -33,7 +33,7 @@ class Dono(models.Model):
 
 
 class Produto(models.Model):
-    idProduto= models.IntegerField(primary_key=True, auto_created=True)
+    idProduto= models.AutoField(primary_key=True, auto_created=True)
     nome= models.CharField(max_length=45)
     marca= models.CharField(max_length=45)
 

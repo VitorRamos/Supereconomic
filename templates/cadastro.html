@@ -1,5 +1,23 @@
 {%  extends "header.html" %}
 
 {% block content %}
-    <p>Tela cadastro</p>
+    <h1>Cadastro</h1>
+    <form role="form" action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" name="cadastrar">Cadastrar</button>
+        <button type="submit" name="voltar">Voltar</button>
+    </form>
+
+    <p></p>
+{#    <p>CLientes Cadastrados</p>#}
+{#    {% for cliente in clientes %}#}
+{#        <p>{{cliente.idCliente.nome}} {{cliente.idCliente.senha}} {{ cliente.CPF }}</p>#}
+{#    {%  endfor %}#}
+{#    {% for cliente in clientes %}#}
+{#        <p>{{cliente.username}} {{cliente.password}}</p>#}
+{#    {%  endfor %}#}
+    {% for aviso in avisos %}
+        <p>{{aviso}}</p>
+    {%  endfor %}
 {% endblock %}

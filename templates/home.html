@@ -2,4 +2,9 @@
 
 {% block content %}
     <p>Pagina inicial</p>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <button type="submit" name="sair">Sair</button>
+    </form>
 {% endblock %}
