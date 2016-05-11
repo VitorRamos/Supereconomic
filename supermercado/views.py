@@ -1,12 +1,16 @@
 from django.shortcuts import render
 from django.contrib import auth
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from models import *
 from forms import *
 
-
 def index(request):
-    if request.method == "POST" and 'sair' in request.POST:
+    if request.method == "POST" and "logar" in request.POST:
+        login(request)
+
+    elif request.method == "POST" and 'sair' in request.POST:
         auth.logout(request)
     return render(request, 'home.html')
 
@@ -30,6 +34,7 @@ def login(request):
                     avisos.append("Essa conta foi desativada.")
             else:
                 avisos.append("Senha ou usuario incorretos.")
+                #   return HttpResponseRedirect('/cadastro')
         # sem usar django
         #if form.is_valid():
             # user = Usuario()
@@ -49,7 +54,11 @@ def login(request):
 
 def cadastro(request):
     avisos = []
-    if request.method == "POST" and 'voltar' in request.POST:
+
+    if request.method == "POST" and "logar" in request.POST:
+        login(request)
+
+    elif request.method == "POST" and 'voltar' in request.POST:
         return render(request, 'home.html')
 
     elif request.method == "POST" and 'cadastrar' in request.POST:
@@ -88,4 +97,6 @@ def produtos(request):
     return render(request, 'produtos.html')
 
 def sobre(request):
+    if request.method == "POST" and "logar" in request.POST:
+        login(request)
     return render(request, 'sobre.html')
