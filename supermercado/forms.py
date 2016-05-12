@@ -11,3 +11,7 @@ class CadastroForm(forms.Form):
 class LoginForm(forms.Form):
         nome= forms.CharField(max_length=45)
         senha= forms.CharField(max_length=45, widget=forms.PasswordInput())
+
+class CadastroProd(forms.Form):
+        nome= forms.CharField(max_length=45)
+        marca= forms.CharField(max_length=45)

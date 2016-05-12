@@ -90,11 +90,33 @@ def cadastro(request):
                                              'avisos': avisos})
 
 
-def favoritos(resquest):
-    return render(resquest, 'favoritos.html')
+def favoritos(request):
+    if not request.user.groups.filter(name="Clientes|Donos").exists():
+        return HttpResponseRedirect('/')
+    return render(request, 'favoritos.html')
 
 def produtos(request):
-    return render(request, 'produtos.html')
+    if not request.user.groups.filter(name="Donos").exists():
+        return HttpResponseRedirect('/')
+
+    avisos= []
+    if request.method == "POST" and 'cadastrarProd' in request.POST:
+        form = CadastroProd(request.POST)
+
+        if form.is_valid():
+            produto = Produto()
+            produto.nome = form.cleaned_data.get('nome')
+            produto.marca = form.cleaned_data.get('marca')
+            produto.save()
+
+        else:
+            avisos.append("Produto Invalido")
+
+    else:
+        form = CadastroProd()
+
+    return render(request, 'produtos.html', {'form':form, 'avisos':avisos,
+                                             'produtos':Produto.objects.all()})
 
 def sobre(request):
     if request.method == "POST" and "logar" in request.POST:
