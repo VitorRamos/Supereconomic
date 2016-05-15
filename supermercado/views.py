@@ -8,7 +8,7 @@ from forms import *
 
 def index(request):
     if request.method == "POST" and "logar" in request.POST:
-        login(request)
+        return login(request)
 
     elif request.method == "POST" and 'sair' in request.POST:
         auth.logout(request)
@@ -55,8 +55,8 @@ def login(request):
 def cadastro(request):
     avisos = []
 
-    if request.method == "POST" and "logar" in request.POST:
-        login(request)
+    if request.method == "POST" and 'logar' in request.POST:
+        return login(request)
 
     elif request.method == "POST" and 'voltar' in request.POST:
         return render(request, 'home.html')
@@ -86,12 +86,13 @@ def cadastro(request):
         # cliente.save()
     else:
         form = CadastroForm()
+
     return render(request, 'cadastro.html', {'form': form, 'clientes': auth.models.User.objects.all(),
                                              'avisos': avisos})
 
 
 def favoritos(request):
-    if not request.user.groups.filter(name="Clientes|Donos").exists():
+    if not request.user.groups.filter(name="Clientes").exists():
         return HttpResponseRedirect('/')
     return render(request, 'favoritos.html')
 
@@ -120,5 +121,5 @@ def produtos(request):
 
 def sobre(request):
     if request.method == "POST" and "logar" in request.POST:
-        login(request)
+        return login(request)
     return render(request, 'sobre.html')
