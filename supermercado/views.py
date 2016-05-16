@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from models import *
 from forms import *
 
+
 def index(request):
     if request.method == "POST" and "logarGlobal" in request.POST:  # global login
         return login(request)
@@ -44,7 +45,7 @@ def login(request):
                 else:
                     avisos.append("Essa conta foi desativada.")
             else:
-                request.path= "/login/" # bug consertar
+                request.path= "/login/" #TODO bug consertar
                 avisos.append("Senha ou usuario incorretos.")
 
     else:
@@ -106,23 +107,34 @@ def produtos(request):
         return HttpResponseRedirect("/")
 
     avisos= []
+    produtos= []
     if request.method == "POST" and "cadastrarProd" in request.POST:
         form = CadastroProd(request.POST)
 
         if form.is_valid():
+            dono= Dono.objects.filter(idEmpresario=request.user.id)[0]
+
+            possui= Possui()
             produto = Produto()
             produto.nome = form.cleaned_data.get("nome")
             produto.marca = form.cleaned_data.get("marca")
             produto.save()
 
+            possui.idProduto = produto
+            possui.idSupermercado = dono.idSupermercado
+            possui.preco = form.cleaned_data.get("preco")
+            possui.quantidade = form.cleaned_data.get("quantidade")
+            possui.save()
+            form = CadastroProd()
         else:
             avisos.append("Produto Invalido")
-
     else:
         form = CadastroProd()
 
+    dono = Dono.objects.filter(idEmpresario=request.user.id)[0]
+    produtos = Possui.objects.filter(idSupermercado=dono.idSupermercado)
     return render(request, "produtos.html", {"form":form, "avisos":avisos,
-                                             "produtos":Produto.objects.all()})
+                                             "produtos": produtos})
 
 def sobre(request):
     if request.method == "POST" and "logarGlobal" in request.POST:  # global login
@@ -171,8 +183,9 @@ def cadastroDono(request):
                 #empresaio.idEmpresario = usuario
                 #empresaio.CNPJ = form.cleaned_data.get("CNPJ")
                 #empresaio.save()
-                dono.idEmpresaio = user
+                dono.idEmpresario = user
                 dono.idSupermercado = supermercado
+                dono.CNPJ= form.cleaned_data.get("CNPJ")
                 dono.save()
 
                 form = CadastroDono()
@@ -182,3 +195,11 @@ def cadastroDono(request):
     else:
         form= CadastroDono()
     return render(request, "cadastroDono.html", {"form":form, "avisos":avisos})
+
+def pesquisa(request):
+    pesquisa = []
+    if request.method == "POST" and "buscaSimples" in request.POST:
+        pesAux = Produto.objects.filter(nome__icontains = request.POST.get("buscaNome"))
+        pesquisa = Possui.objects.filter(idProduto__in = pesAux)
+
+    return render(request, "pesquisa.html", {"pesquisa":pesquisa})
