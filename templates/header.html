@@ -72,6 +72,9 @@
             {% if user.groups.all.0.name == 'Donos' %}
                 <li class="{% if '/produtos/' == request.path %}active{% endif %}"><a href='/produtos'>produtos</a> </li>
             {% endif %}
+            {% if user.groups.all.0.name == 'Clientes' %}
+                <li class="{% if '/pesquisa/' == request.path %}active{% endif %}"><a href='/pesquisa'>Pesquisa</a> </li>
+            {% endif %}
             {% if user.is_superuser %}
                 <li class="{% if '/cadastroDono/' == request.path %}active{% endif %}"><a href='/cadastroDono'>cadastroDono</a> </li>
             {% endif %}
