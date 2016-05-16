@@ -1,22 +1,22 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.contrib.auth.models import User
 
-
-class Usuario(models.Model):
-    idUsuario = models.AutoField(primary_key=True, auto_created=True)
-    nome = models.CharField(max_length=45)
-    senha = models.CharField(max_length=45)
-
-
-class Cliente(models.Model):
-    idCliente = models.OneToOneField(Usuario, primary_key=True)
-    CPF = models.CharField(max_length=45)
-
-
-class Empresario(models.Model):
-    idEmpresario= models.OneToOneField(Usuario, primary_key=True)
-    CPF= models.CharField(max_length=45)
+# class Usuario(models.Model):
+#     idUsuario = models.AutoField(primary_key=True, auto_created=True)
+#     nome = models.CharField(max_length=45)
+#     senha = models.CharField(max_length=45)
+#
+#
+# class Cliente(models.Model):
+#     idCliente = models.OneToOneField(Usuario, primary_key=True)
+#     CPF = models.CharField(max_length=45)
+#
+#
+# class Empresario(models.Model):
+#     idEmpresario= models.OneToOneField(Usuario, primary_key=True)
+#     CNPJ= models.CharField(max_length=45)
 
 
 class Supermercado(models.Model):
@@ -27,9 +27,10 @@ class Supermercado(models.Model):
 
 class Dono(models.Model):
     class Meta:
-        unique_together = (("idEmpresaio", "idSupermercado"))
-    idEmpresaio= models.ForeignKey(Empresario)
-    idSupermercado= models.ForeignKey(Supermercado)
+        unique_together = (("idEmpresario", "idSupermercado"))
+    idEmpresario = models.ForeignKey(User)
+    idSupermercado = models.ForeignKey(Supermercado)
+    CNPJ= models.CharField(max_length=45)
 
 
 class Produto(models.Model):
@@ -50,5 +51,5 @@ class Possui(models.Model):
 class Favorito(models.Model):
     class Meta:
         unique_together = (("idCliente", "idProduto"))
-    idCliente = models.ForeignKey(Cliente)
+    idCliente = models.ForeignKey(User)
     idProduto = models.ForeignKey(Produto)

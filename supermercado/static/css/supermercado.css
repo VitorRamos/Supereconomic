@@ -2,7 +2,27 @@ html,body {
     height:100%
 }
 
-.texto{
-    background-color: red;
+.menu{
+    background-color: #fff;
+    text-align: left;
+    position: fixed;
+    top: 51px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    /*border-right: 1px solid #eee;*/
 }
-
+.menuWord{
+    padding-left: 10px;
+}
+.tittlePage{
+    margin-left: 2%;
+}
+.conteudo{
+    margin-top: 5%;
+    margin-left: 2%;
+}

@@ -1,16 +1,15 @@
 {%  extends "header.html" %}
 
 {% block content %}
-    <h1>Cadastro</h1>
+    <h3 class="tittlePage">Cadastrar Dono</h3>
     <form role="form" action="" method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" name="cadastrar">Cadastrar</button>
-        <button type="submit" name="voltar">Voltar</button>
     </form>
 
     {% for aviso in avisos %}
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-danger" role="alert">
             <p>{{aviso}}</p>
         </div>
     {%  endfor %}

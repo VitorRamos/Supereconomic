@@ -1,12 +1,14 @@
 {%  extends "header.html" %}
 
 {% block content %}
-    <h1>Cadastrar Produto</h1>
-    <form role="form" action="" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" name="cadastrarProd">Cadastrar</button>
-    </form>
+    <h3 class="tittlePage">Pesquisa Produto</h3>
+    <div class="conteudo">
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="buscaNome">
+            <button type="submit" name="buscaSimples"><i class="glyphicon glyphicon-search"></i></button>
+        </form>
+    </div>
 
     <table class="table">
     <caption>Produtos Cadastrados</caption>
@@ -16,24 +18,20 @@
                 <th>Marca</th>
                 <th>Supermercado</th>
                 <th>Preco</th>
-                <th>Quantidade</th>
+{#                <th>Quantidade</th>#}
             </tr>
         </thead>
 
         <tbody>
-            {% for produto in produtos %}
+            {% for produto in pesquisa %}
             <tr>
                 <td>{{produto.idProduto.nome}}</td>
                 <td>{{produto.idProduto.marca}}</td>
                 <td>{{produto.idSupermercado.nome}}</td>
                 <td>{{produto.preco}}</td>
-                <td>{{produto.quantidade}}</td>
+{#                <td>{{produto.quantidade}}</td>#}
             </tr>
             {% endfor %}
         </tbody>
     </table>
-
-    {% for aviso in avisos %}
-        <p>{{aviso}}</p>
-    {%  endfor %}
 {% endblock %}
