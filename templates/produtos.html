@@ -8,11 +8,30 @@
         <button type="submit" name="cadastrarProd">Cadastrar</button>
     </form>
 
-    <p></p>
-    <p>Produtos Cadastrados</p>
-    {% for produto in produtos %}
-        <p>{{produto.nome}} {{produto.marca}}</p>
-    {%  endfor %}
+    <table class="table">
+    <caption>Produtos Cadastrados</caption>
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Marca</th>
+                <th>Supermercado</th>
+                <th>Preco</th>
+                <th>Quantidade</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for produto in produtos %}
+            <tr>
+                <td>{{produto.idProduto.nome}}</td>
+                <td>{{produto.idProduto.marca}}</td>
+                <td>{{produto.idSupermercado.nome}}</td>
+                <td>{{produto.preco}}</td>
+                <td>{{produto.quantidade}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
     {% for aviso in avisos %}
         <p>{{aviso}}</p>
