@@ -23,5 +23,6 @@ urlpatterns = [
     url(r'^favoritos/$', favoritos, name='favoritos'),
     url(r'^produtos/$', produtos, name='produtos'),
     url(r'^cadastroDono/', cadastroDono, name='dono'),
+    url(r'^pesquisa/', pesquisa, name='pesquisa'),
     url(r'^$', index, name='index'),
 ]
