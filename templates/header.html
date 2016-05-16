@@ -9,9 +9,9 @@
     <link rel="stylesheet" href="{% static 'css/supermercado.css' %}" type = "text/css"/>
     <link rel="stylesheet" href="{% static 'jumbotron.css' %}" type="text/css">
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link rel="stylesheet" href="{% static '/css/ie10-viewport-bug-workaround.css' %}" type="text/css">
-    <script src="{% static '/js/bootstrap.js'%}"></script>
-    <script src="{% static '/js/bootstrap.min.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'css/ie10-viewport-bug-workaround.css' %}" type="text/css">
+    <script src="{% static 'js/bootstrap.js'%}"></script>
+    <script src="{% static 'js/bootstrap.min.js'%}"></script>
     <meta name="viewport" content = "width=device-width, initial-scale=1.0">
 </head>
 ​
@@ -39,13 +39,13 @@
                     <div class="form-group">
                         <input type="password" placeholder="Senha" name="senha" class="form-control">
                     </div>
-                    <button type="submit" class="btn btn-success" name="logar">Entrar</button>
-                    <button type="submit" class="btn btn-primary" name="cadastrar">Cadastrar-se</button>
+                    <button type="submit" class="btn btn-success" name="logarGlobal">Entrar</button>
+                    <button type="submit" class="btn btn-primary" name="cadastrarGlobal">Cadastrar-se</button>
                 {% endif %}
 
                 {% if user.is_authenticated %}
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger" name="sair">Sair</button>
+                    <button type="submit" class="btn btn-danger" name="sairGlobal">Sair</button>
                 {% endif %}
             </form>
         </div><!--/.navbar-collapse -->
@@ -61,22 +61,22 @@
 <div class="row">
     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-sm-3 col-md-2 sidebar menu">
         <ul class="nav nav-sidebar nav-pills nav-stacked navmenuWord">
-            ​
-            <li class="active"><a href='/'>Home</a></li>    ​
+
+            <li class="{% if '/' == request.path %}active{% endif %}"><a href='/'>Home</a></li>    ​
             {% if not user.is_authenticated %}
-                <li><a href='/login/'>login</a></li>
-                <li><a href='/cadastro'>cadastrar-se</a></li>
+                <li class="{% if '/login/' == request.path %}active{% endif %}"><a href='/login/'>login</a></li>
+                <li class="{% if '/cadastro/' == request.path %}active{% endif %}"><a href='/cadastro'>cadastrar-se</a></li>
             {% endif %}
             {% if user.groups.all.0.name == 'Clientes' %}
-                <li><a href='/favoritos'>favoritos</a> </li>
+                <li class="{% if '/favoritos/' == request.path %}active{% endif %}"><a href='/favoritos'>favoritos</a> </li>
             {% endif %}            ​
             {% if user.groups.all.0.name == 'Donos' %}
-                <li><a href='/produtos'>produtos</a> </li>
+                <li class="{% if '/produtos/' == request.path %}active{% endif %}"><a href='/produtos'>produtos</a> </li>
             {% endif %}            ​
             {% if user.is_superuser %}
-                <li><a href='/admin'>adinimistração</a> </li>
-            {% endif %}            ​
-            <li><a href='/sobre'>sobre</a> </li>
+                <li class="{% if '/admin/' == request.path %}active{% endif %}"><a href='/admin'>adinimistração</a> </li>
+            {% endif %}
+            ​<li class="{% if '/sobre/' == request.path %}active{% endif %}"><a href='/sobre'>sobre</a> </li>
             ​
         </ul>
     </div>
