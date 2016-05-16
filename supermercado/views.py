@@ -7,7 +7,7 @@ from models import *
 from forms import *
 
 def index(request):
-    if request.method == "POST" and "logar" in request.POST:
+    if request.method == "POST" and "logar" in request.POST:  # global login
         return login(request)
 
     elif request.method == "POST" and 'cadastrar' in request.POST:
@@ -15,19 +15,22 @@ def index(request):
 
     elif request.method == "POST" and 'sair' in request.POST:
         auth.logout(request)
+        return HttpResponseRedirect('/')
 
     return render(request, 'home.html')
 
-
 def login(request):
-    avisos= []
-    if request.method == "POST" and 'voltar' in request.POST:
-        return render(request, 'home.html')
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/')
 
     elif request.method == "POST" and 'cadastrar' in request.POST:
         return HttpResponseRedirect('/cadastro')
 
-    elif request.method == "POST" and 'logar' in request.POST:
+    avisos= []
+    if request.method == "POST" and 'voltar' in request.POST:
+        return HttpResponseRedirect('/')
+
+    elif request.method == "POST" and ('logar' in request.POST or 'cadastrar' in request.POST):
         form = LoginForm(request.POST)
 
         if form.is_valid():
@@ -36,22 +39,11 @@ def login(request):
             if user is not None:
                 if user.is_active:
                     auth.login(request, user)
-                    return render(request, 'home.html')
+                    return HttpResponseRedirect('/')
                 else:
                     avisos.append("Essa conta foi desativada.")
             else:
                 avisos.append("Senha ou usuario incorretos.")
-                #   return HttpResponseRedirect('/cadastro')
-        # sem usar django
-        #if form.is_valid():
-            # user = Usuario()
-            # user.nome = form.cleaned_data.get('nome')
-            # user.senha = form.cleaned_data.get('senha')
-            # data = Usuario.objects.filter(nome=user.nome, senha=user.senha)
-            # if data.count() == 0:
-            #     print("Usuario nao cadastrado")
-            # for x in data:
-            #     print(x.senha)
 
     else:
         form = LoginForm()
@@ -60,16 +52,18 @@ def login(request):
 
 
 def cadastro(request):
-    avisos = []
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/')
 
-    if request.method == "POST" and 'logar' in request.POST:
+    if request.method == "POST" and "logar" in request.POST:  # global login
         return login(request)
 
     elif request.method == "POST" and 'cadastrar' in request.POST:
         return HttpResponseRedirect('/cadastro')
 
-    elif request.method == "POST" and 'voltar' in request.POST:
-        return render(request, 'home.html')
+    avisos = []
+    if request.method == "POST" and 'voltar' in request.POST:
+        return HttpResponseRedirect('/')
 
     elif request.method == "POST" and 'cadastrar' in request.POST:
         form = CadastroForm(request.POST)
@@ -81,19 +75,12 @@ def cadastro(request):
                                                             'emal', form.cleaned_data.get('senha'))
                 user.groups.add(grupo)
                 user.save()
+                avisos.append("Cadastrado Com Sucesso")
+                #form= CadastroForm() limpa formulario
+                return login(request)
+
             else:
                 avisos.append("Usuario ja existe")
-
-        #if form.is_valid():
-        #sem usar django
-        # user = Usuario()
-        # cliente = Cliente()
-        # user.nome = form.cleaned_data.get('nome')
-        # user.senha = form.cleaned_data.get('senha')
-        # user.save()
-        # cliente.idCliente = user
-        # cliente.CPF = form.cleaned_data.get('CPF')
-        # cliente.save()
     else:
         form = CadastroForm()
 
@@ -137,7 +124,7 @@ def produtos(request):
                                              'produtos':Produto.objects.all()})
 
 def sobre(request):
-    if request.method == "POST" and "logar" in request.POST:
+    if request.method == "POST" and "logar" in request.POST:  # global login
         return login(request)
 
     elif request.method == "POST" and 'sair' in request.POST:
