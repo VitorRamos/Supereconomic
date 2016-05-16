@@ -17,7 +17,9 @@
 {#    {% for cliente in clientes %}#}
 {#        <p>{{cliente.username}} {{cliente.password}}</p>#}
 {#    {%  endfor %}#}
-    {% for aviso in avisos %}
-        <p>{{aviso}}</p>
-    {%  endfor %}
+    <div class="alert alert-success" role="alert">
+        {% for aviso in avisos %}
+            <p>{{aviso}}</p>
+        {%  endfor %}
+    </div>
 {% endblock %}
