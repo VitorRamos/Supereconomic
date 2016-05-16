@@ -136,3 +136,49 @@ def sobre(request):
         return HttpResponseRedirect("/cadastro")
 
     return render(request, "sobre.html")
+
+def cadastroDono(request):
+    if not request.user.is_superuser:
+        return HttpResponseRedirect("/")
+
+    if request.method == "POST" and "sairGlobal" in request.POST:
+        auth.logout(request)
+        return HttpResponseRedirect("/")
+
+    avisos= []
+    if request.method == "POST" and "cadastrar" in request.POST:
+        form = CadastroDono(request.POST)
+        if form.is_valid():
+            if Usuario.objects.filter(nome= form.cleaned_data.get("nome")).exists():
+                avisos.append("Usuario ja existe")
+            else:
+                #usuario = Usuario()
+                supermercado = Supermercado()
+                grupo = auth.models.Group.objects.get(name="Donos")
+                user = auth.models.User.objects.create_user(form.cleaned_data.get("nome"),
+                                                            "emal",
+                                                            form.cleaned_data.get("senha"))
+                user.groups.add(grupo)
+                user.save()
+                #empresaio= Empresario()
+                dono= Dono()
+                #usuario.nome = form.cleaned_data.get("nome")
+                #usuario.senha = form.cleaned_data.get("senha")
+                supermercado.nome = form.cleaned_data.get("nomeSupermercado")
+                supermercado.localizacao = form.cleaned_data.get("localizacao")
+                #usuario.save()
+                supermercado.save()
+                #empresaio.idEmpresario = usuario
+                #empresaio.CNPJ = form.cleaned_data.get("CNPJ")
+                #empresaio.save()
+                dono.idEmpresaio = user
+                dono.idSupermercado = supermercado
+                dono.save()
+
+                form= CadastroDono()
+                avisos.append("Cadastrado Com Sucesso") #TODO mudar cor do aviso no html
+        else:
+            avisos.append("Erro Formulario")
+    else:
+        form= CadastroDono()
+    return render(request, "cadastroDono.html", {"form":form, "avisos":avisos})
