@@ -1,16 +1,13 @@
 {%  extends "header.html" %}
 
 {% block content %}
-    <p>Tela Inicial</p>
-
-    {% if user.is_authenticated %}
-        <p>Bem vindo, {{ user.username }}!!</p>
-        <form action="" method="post">
-            {% csrf_token %}
-            <button type="submit" name="sair">Sair</button>
-        </form>
-    {% else %}
-        <p>Ainda não fez login ?</p>
-    {% endif %}
+    <h3 class="tittlePage">Home</h3>
+    <div class="conteudo">
+        {% if user.is_authenticated %}
+            <p>Bem vindo, {{ user.username }}!!</p>
+        {% else %}
+            <p>Ainda não fez login?</p>
+        {% endif %}
+    </div>
 
 {% endblock %}

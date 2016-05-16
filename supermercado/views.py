@@ -10,8 +10,12 @@ def index(request):
     if request.method == "POST" and "logar" in request.POST:
         return login(request)
 
+    elif request.method == "POST" and 'cadastrar' in request.POST:
+        return HttpResponseRedirect('/cadastro')
+
     elif request.method == "POST" and 'sair' in request.POST:
         auth.logout(request)
+
     return render(request, 'home.html')
 
 
@@ -19,6 +23,9 @@ def login(request):
     avisos= []
     if request.method == "POST" and 'voltar' in request.POST:
         return render(request, 'home.html')
+
+    elif request.method == "POST" and 'cadastrar' in request.POST:
+        return HttpResponseRedirect('/cadastro')
 
     elif request.method == "POST" and 'logar' in request.POST:
         form = LoginForm(request.POST)
@@ -58,6 +65,9 @@ def cadastro(request):
     if request.method == "POST" and 'logar' in request.POST:
         return login(request)
 
+    elif request.method == "POST" and 'cadastrar' in request.POST:
+        return HttpResponseRedirect('/cadastro')
+
     elif request.method == "POST" and 'voltar' in request.POST:
         return render(request, 'home.html')
 
@@ -94,11 +104,18 @@ def cadastro(request):
 def favoritos(request):
     if not request.user.groups.filter(name="Clientes").exists():
         return HttpResponseRedirect('/')
+
+    elif request.method == "POST" and 'sair' in request.POST:
+        auth.logout(request)
+
     return render(request, 'favoritos.html')
 
 def produtos(request):
     if not request.user.groups.filter(name="Donos").exists():
         return HttpResponseRedirect('/')
+
+    elif request.method == "POST" and 'sair' in request.POST:
+        auth.logout(request)
 
     avisos= []
     if request.method == "POST" and 'cadastrarProd' in request.POST:
@@ -122,4 +139,11 @@ def produtos(request):
 def sobre(request):
     if request.method == "POST" and "logar" in request.POST:
         return login(request)
+
+    elif request.method == "POST" and 'sair' in request.POST:
+        auth.logout(request)
+
+    elif request.method == "POST" and 'cadastrar' in request.POST:
+        return HttpResponseRedirect('/cadastro')
+
     return render(request, 'sobre.html')
