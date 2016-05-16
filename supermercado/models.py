@@ -27,9 +27,10 @@ class Supermercado(models.Model):
 
 class Dono(models.Model):
     class Meta:
-        unique_together = (("idEmpresaio", "idSupermercado"))
-    idEmpresaio= models.ForeignKey(User)
-    idSupermercado= models.ForeignKey(Supermercado)
+        unique_together = (("idEmpresario", "idSupermercado"))
+    idEmpresario = models.ForeignKey(User)
+    idSupermercado = models.ForeignKey(Supermercado)
+    CNPJ= models.CharField(max_length=45)
 
 
 class Produto(models.Model):
