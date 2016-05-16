@@ -73,10 +73,9 @@
                 <li class="{% if '/produtos/' == request.path %}active{% endif %}"><a href='/produtos'>produtos</a> </li>
             {% endif %}
             {% if user.is_superuser %}
-                <li class="{% if '/admin/' == request.path %}active{% endif %}"><a href='/admin'>adinimistração</a> </li>
+                <li class="{% if '/cadastroDono/' == request.path %}active{% endif %}"><a href='/cadastroDono'>cadastroDono</a> </li>
             {% endif %}
             <li class="{% if '/sobre/' == request.path %}active{% endif %}"><a href='/sobre'>sobre</a> </li>
-
         </ul>
     </div>
     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-lg-offset-2 col-xs-offset-2 col-sm-offset-2 col-md-offset-2">
