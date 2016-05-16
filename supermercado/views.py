@@ -9,18 +9,17 @@ from forms import *
 def index(request):
     if request.method == "POST" and "logar" in request.POST:
         return login(request)
-
     elif request.method == "POST" and 'sair' in request.POST:
         auth.logout(request)
+        return HttpResponseRedirect('/')
     return render(request, 'home.html')
-
 
 def login(request):
     avisos= []
     if request.method == "POST" and 'voltar' in request.POST:
-        return render(request, 'home.html')
+        return HttpResponseRedirect('/')
 
-    elif request.method == "POST" and 'logar' in request.POST:
+    elif request.method == "POST" and ('logar' in request.POST or 'cadastrar' in request.POST):
         form = LoginForm(request.POST)
 
         if form.is_valid():
@@ -29,12 +28,12 @@ def login(request):
             if user is not None:
                 if user.is_active:
                     auth.login(request, user)
-                    return render(request, 'home.html')
+                    return HttpResponseRedirect('/')
                 else:
                     avisos.append("Essa conta foi desativada.")
             else:
                 avisos.append("Senha ou usuario incorretos.")
-                #   return HttpResponseRedirect('/cadastro')
+                #return HttpResponseRedirect('/cadastro')
         # sem usar django
         #if form.is_valid():
             # user = Usuario()
@@ -71,6 +70,10 @@ def cadastro(request):
                                                             'emal', form.cleaned_data.get('senha'))
                 user.groups.add(grupo)
                 user.save()
+                avisos.append("Cadastrado Com Sucesso")
+                #form= CadastroForm() limpa formulario
+                return login(request)
+
             else:
                 avisos.append("Usuario ja existe")
 
