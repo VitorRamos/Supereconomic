@@ -9,17 +9,9 @@
         <button type="submit" name="voltar">Voltar</button>
     </form>
 
-    <p></p>
-{#    <p>CLientes Cadastrados</p>#}
-{#    {% for cliente in clientes %}#}
-{#        <p>{{cliente.idCliente.nome}} {{cliente.idCliente.senha}} {{ cliente.CPF }}</p>#}
-{#    {%  endfor %}#}
-{#    {% for cliente in clientes %}#}
-{#        <p>{{cliente.username}} {{cliente.password}}</p>#}
-{#    {%  endfor %}#}
-    <div class="alert alert-success" role="alert">
-        {% for aviso in avisos %}
+    {% for aviso in avisos %}
+        <div class="alert alert-warning" role="alert">
             <p>{{aviso}}</p>
-        {%  endfor %}
-    </div>
+        </div>
+    {%  endfor %}
 {% endblock %}
