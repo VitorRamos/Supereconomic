@@ -149,7 +149,7 @@ def cadastroDono(request):
     if request.method == "POST" and "cadastrar" in request.POST:
         form = CadastroDono(request.POST)
         if form.is_valid():
-            if Usuario.objects.filter(nome= form.cleaned_data.get("nome")).exists():
+            if auth.models.User.objects.filter(username=form.cleaned_data.get("nome")).exists():
                 avisos.append("Usuario ja existe")
             else:
                 #usuario = Usuario()
@@ -175,7 +175,7 @@ def cadastroDono(request):
                 dono.idSupermercado = supermercado
                 dono.save()
 
-                form= CadastroDono()
+                form = CadastroDono()
                 avisos.append("Cadastrado Com Sucesso") #TODO mudar cor do aviso no html
         else:
             avisos.append("Erro Formulario")
