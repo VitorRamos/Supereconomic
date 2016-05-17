@@ -1,13 +1,12 @@
 from django.shortcuts import render
 from django.contrib import auth
-from django.http import HttpResponse
+#from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from models import *
 from forms import *
-
 
 def index(request):
     if request.method == "POST" and "logarGlobal" in request.POST:  # global login
+        request.path = "/login/"
         return login(request)
 
     if request.method == "POST" and "cadastrarGlobal" in request.POST:
@@ -45,7 +44,6 @@ def login(request):
                 else:
                     avisos.append("Essa conta foi desativada.")
             else:
-                request.path= "/login/" #TODO bug consertar
                 avisos.append("Senha ou usuario incorretos.")
 
     else:
@@ -59,6 +57,7 @@ def cadastro(request):
         return HttpResponseRedirect('/')
 
     if request.method == "POST" and "logarGlobal" in request.POST:  # global login
+        request.path = "/login/"
         return login(request)
 
     avisos = []
@@ -138,6 +137,7 @@ def produtos(request):
 
 def sobre(request):
     if request.method == "POST" and "logarGlobal" in request.POST:  # global login
+        request.path = "/login/"
         return login(request)
 
     if request.method == "POST" and "sairGlobal" in request.POST:
@@ -157,12 +157,13 @@ def cadastroDono(request):
         auth.logout(request)
         return HttpResponseRedirect("/")
 
-    avisos= []
+    avisos_sucesso= []
+    avisos_erro= []
     if request.method == "POST" and "cadastrar" in request.POST:
         form = CadastroDono(request.POST)
         if form.is_valid():
             if auth.models.User.objects.filter(username=form.cleaned_data.get("nome")).exists():
-                avisos.append("Usuario ja existe")
+                avisos_erro.append("Usuario ja existe")
             else:
                 #usuario = Usuario()
                 supermercado = Supermercado()
@@ -189,14 +190,22 @@ def cadastroDono(request):
                 dono.save()
 
                 form = CadastroDono()
-                avisos.append("Cadastrado Com Sucesso") #TODO mudar cor do aviso no html
+                avisos_sucesso.append("Cadastrado Com Sucesso")
         else:
-            avisos.append("Erro Formulario")
+            avisos_erro.append("Erro Formulario")
     else:
         form= CadastroDono()
-    return render(request, "cadastroDono.html", {"form":form, "avisos":avisos})
+    return render(request, "cadastroDono.html", {"form":form, "avisos_erro":avisos_erro, "avisos_sucesso":avisos_sucesso})
 
 def pesquisa(request):
+
+    if not request.user.groups.filter(name="Clientes").exists():
+        return HttpResponseRedirect("/")
+
+    if request.method == "POST" and "sairGlobal" in request.POST:
+        auth.logout(request)
+        return HttpResponseRedirect("/")
+
     pesquisa = []
     if request.method == "POST" and "buscaSimples" in request.POST:
         pesAux = Produto.objects.filter(nome__icontains = request.POST.get("buscaNome"))
