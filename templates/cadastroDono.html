@@ -8,7 +8,12 @@
         <button type="submit" name="cadastrar">Cadastrar</button>
     </form>
 
-    {% for aviso in avisos %}
+    {% for aviso in avisos_sucesso %}
+        <div class="alert alert-success" role="alert">
+            <p>{{aviso}}</p>
+        </div>
+    {%  endfor %}
+    {% for aviso in avisos_erro %}
         <div class="alert alert-danger" role="alert">
             <p>{{aviso}}</p>
         </div>
