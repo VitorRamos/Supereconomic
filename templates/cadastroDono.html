@@ -5,7 +5,7 @@
     <form role="form" action="" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" name="cadastrar">Cadastrar</button>
+        <button type="submit" name="cadastrar" class="btn btn-success">Cadastrar</button>
     </form>
 
     {% for aviso in avisos_sucesso %}

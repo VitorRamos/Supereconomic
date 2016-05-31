@@ -6,8 +6,8 @@
         <form role="form" action="" method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" name="logar">Logar</button>
-            <button type="submit" name="voltar">Voltar</button>
+            <button type="submit" name="logar" class="btn btn-success">Entrar</button>
+            <button type="submit" name="voltar" class="btn btn-danger">Voltar</button>
         </form>
     </div>
     {% for aviso in avisos %}
