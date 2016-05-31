@@ -2,4 +2,27 @@
 
 {% block content %}
     <p>Favoritos</p>
+
+    <table class="table">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Marca</th>
+                    <th>Supermercado</th>
+                    <th>Preco</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for produto in prodFavorito %}
+                <tr>
+                    <td>{{produto.idProduto.nome}}</td>
+                    <td>{{produto.idProduto.marca}}</td>
+                    <td>{{produto.idSupermercado.nome}}</td>
+                    <td>{{produto.preco}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
 {% endblock %}

@@ -88,6 +88,7 @@ def cadastro(request):
 
 
 def favoritos(request):
+
     if not request.user.groups.filter(name="Clientes").exists():
         return HttpResponseRedirect("/")
 
@@ -95,7 +96,13 @@ def favoritos(request):
         auth.logout(request)
         return HttpResponseRedirect("/")
 
-    return render(request, "favoritos.html")
+    # pesAux = Produto.objects.filter(nome__icontains=request.POST.get("buscaNome"))
+    # pesquisa = Possui.objects.filter(idProduto__in=pesAux)
+    #
+    prodFavorito = Favorito.objects.filter(idCliente=request.user).values_list("idProduto")
+    dadosProd = Possui.objects.filter(idProduto__in=prodFavorito)
+
+    return render(request, "favoritos.html", {"prodFavorito":dadosProd})
 
 def produtos(request):
     if not request.user.groups.filter(name="Donos").exists():
@@ -211,4 +218,21 @@ def pesquisa(request):
         pesAux = Produto.objects.filter(nome__icontains = request.POST.get("buscaNome"))
         pesquisa = Possui.objects.filter(idProduto__in = pesAux)
 
-    return render(request, "pesquisa.html", {"pesquisa":pesquisa})
+    aviso_sucess = []
+    aviso_error = []
+
+    if request.method == "POST" and "favoritar" in request.POST:
+        some_var = request.POST.getlist("favoritos")
+        for id in some_var:
+            produtoFavorito = Produto.objects.filter(idProduto=id)[0]
+            if(not Favorito.objects.filter(idProduto=produtoFavorito, idCliente=request.user).exists()):
+                favorito = Favorito()
+                favorito.idProduto = produtoFavorito
+                favorito.idCliente = request.user
+                favorito.save()
+                aviso_sucess.append(produtoFavorito.nome+" cadastrado com sucesso ")
+
+            else:
+                aviso_error.append("Esse produto ja esta nos seus favoritos")
+
+    return render(request, "pesquisa.html", {"pesquisa":pesquisa, "aviso_sucess":aviso_sucess, "aviso_error":aviso_error})
