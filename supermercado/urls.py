@@ -14,15 +14,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
+from django.contrib.auth.decorators import login_required, permission_required
+
 from views import *
 
 urlpatterns = [
-    url(r'^login/$', login, name='login'),
-    url(r'^cadastro/$', cadastro, name='cadastro'),
-    url(r'^sobre/$', sobre, name='sobre'),
-    url(r'^favoritos/$', favoritos, name='favoritos'),
-    url(r'^produtos/$', produtos, name='produtos'),
-    url(r'^cadastroDono/', cadastroDono, name='dono'),
-    url(r'^pesquisa/', pesquisa, name='pesquisa'),
     url(r'^$', index, name='index'),
+    url(r'^login/$', login, name='login'),
+    url(r'^logout/$', logout, name='logout'),
+    url(r'^cadastro/$', cadastro, name='cadastro'),
+    url(r'^cadastroDono/$', cadastroDono, name='dono'),
+    url(r'^produtos/$', produtos, name='produtos'),
+    url(r'^favoritos/$', favoritos, name='favoritos'),
+    url(r'^pesquisa/$', pesquisa, name='pesquisa'),
+    url(r'^sobre/$', sobre, name='sobre')
 ]
