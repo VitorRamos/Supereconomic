@@ -1,6 +1,9 @@
 from django.shortcuts import render
-from django.contrib import auth
 from django.http import HttpResponseRedirect
+from django.contrib import auth
+from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import user_passes_test
+
 from forms import LoginForm, CadastroForm, CadastroDono, CadastroProd
 from models import Dono, Supermercado, Favorito, Possui, Produto
 
@@ -9,10 +12,8 @@ def index(request):
     return render(request, 'home.html')
 
 
+@user_passes_test(lambda user: user.is_authenticated() == False)
 def login(request):
-    if request.user.is_authenticated():
-        return HttpResponseRedirect('/')
-
     avisos= []
 
     if request.method == 'GET' and ('logar' in request.GET or 'logarGlobal' in request.GET):
@@ -28,22 +29,20 @@ def login(request):
                     avisos.append('Essa conta foi desativada.')
             else:
                 avisos.append('Senha ou usuario incorretos.')
-
     else:
         form = LoginForm()
 
     return render(request, 'login.html', {'form': form, 'avisos': avisos})
 
 
+@login_required
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect('/')
 
 
+@user_passes_test(lambda user: user.is_authenticated() == False)
 def cadastro(request):
-    if request.user.is_authenticated():
-        return HttpResponseRedirect('/')
-
     avisos = []
 
     if request.method == 'POST' and 'cadastrar' in request.POST:
@@ -70,10 +69,10 @@ def cadastro(request):
 
     return render(request, "cadastro.html", {'form': form, 'avisos': avisos})
 
-def cadastroDono(request):
-    if not request.user.is_superuser:
-        return HttpResponseRedirect('/')
 
+@login_required
+@permission_required('is_superuser')
+def cadastroDono(request):
     avisos_sucesso= []
     avisos_erro= []
     if request.method == 'POST' and 'cadastrar' in request.POST:
@@ -109,11 +108,9 @@ def cadastroDono(request):
     return render(request, 'cadastroDono.html', {'form':form, 'avisos_erro':avisos_erro, 'avisos_sucesso':avisos_sucesso})
 
 
-
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Donos').exists() == True)
 def produtos(request):
-    if not request.user.groups.filter(name='Donos').exists():
-        return HttpResponseRedirect('/')
-
     avisos = []
     if request.method == 'POST' and 'cadastrarProd' in request.POST:
         form = CadastroProd(request.POST)
@@ -141,20 +138,22 @@ def produtos(request):
                                              'produtos': produtos})
 
 
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Clientes').exists() == True)
 def favoritos(request):
-    if not request.user.groups.filter(name='Clientes').exists():
-        return HttpResponseRedirect('/')
-
     prodFavorito = Favorito.objects.filter(idCliente=request.user).values_list('idProduto')
     dadosProd = Possui.objects.filter(idProduto__in=prodFavorito)
+
+    if request.method == 'POST' and 'deletar' in request.POST:
+        prodDeletar= Favorito.objects.filter(idProduto=request.POST.get('deletar'))[0]
+        prodDeletar.delete()
 
     return render(request, 'favoritos.html', {'prodFavorito':dadosProd})
 
 
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Clientes').exists() == True)
 def pesquisa(request):
-    if not request.user.groups.filter(name='Clientes').exists():
-        return HttpResponseRedirect("/")
-
     pesquisas = []
     if request.method == 'GET' and 'buscaSimples' in request.GET:
         pesAux = Produto.objects.filter(nome__icontains = request.GET.get('buscaNome'))
