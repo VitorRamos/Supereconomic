@@ -3,7 +3,7 @@
 {% block content %}
     <h3 class="tittlePage">Pesquisa Produto</h3>
     <div class="conteudo">
-        <form method="POST">
+        <form method="GET">
             {% csrf_token %}
             <input type="text" name="buscaNome">
             <button type="submit" name="buscaSimples"><i class="glyphicon glyphicon-search"></i></button>

@@ -6,9 +6,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" name="cadastrar" class="btn btn-success">Cadastrar</button>
-        <button type="submit" name="voltar" class="btn btn-danger">Voltar</button>
     </form>
-
     {% for aviso in avisos %}
         <div class="alert alert-warning" role="alert">
             <p>{{aviso}}</p>

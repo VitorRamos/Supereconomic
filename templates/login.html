@@ -3,11 +3,10 @@
 {% block content %}
     <h2 class="tittlePage">Entre no Sistema</h2>
     <div class="row conteudo">
-        <form role="form" action="" method="post">
+        <form role="form" action="" method="get">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit" name="logar" class="btn btn-success">Entrar</button>
-            <button type="submit" name="voltar" class="btn btn-danger">Voltar</button>
         </form>
     </div>
     {% for aviso in avisos %}
