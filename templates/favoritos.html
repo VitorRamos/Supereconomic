@@ -3,13 +3,16 @@
 {% block content %}
     <p>Favoritos</p>
 
-    <table class="table">
+    <form method="POST">
+        {% csrf_token %}
+        <table class="table">
             <thead>
                 <tr>
                     <th>Produto</th>
                     <th>Marca</th>
                     <th>Supermercado</th>
                     <th>Preco</th>
+                    <th>Remover</th>
                 </tr>
             </thead>
 
@@ -20,9 +23,11 @@
                     <td>{{produto.idProduto.marca}}</td>
                     <td>{{produto.idSupermercado.nome}}</td>
                     <td>{{produto.preco}}</td>
+                    <td><button type="submit" value="{{ produto.idProduto.idProduto }}"
+                                class="glyphicon glyphicon-remove" name="deletar"></button></td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-
+    </form>
 {% endblock %}
