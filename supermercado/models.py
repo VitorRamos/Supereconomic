@@ -1,22 +1,6 @@
 from __future__ import unicode_literals
-
 from django.db import models
 from django.contrib.auth.models import User
-
-# class Usuario(models.Model):
-#     idUsuario = models.AutoField(primary_key=True, auto_created=True)
-#     nome = models.CharField(max_length=45)
-#     senha = models.CharField(max_length=45)
-#
-#
-# class Cliente(models.Model):
-#     idCliente = models.OneToOneField(Usuario, primary_key=True)
-#     CPF = models.CharField(max_length=45)
-#
-#
-# class Empresario(models.Model):
-#     idEmpresario= models.OneToOneField(Usuario, primary_key=True)
-#     CNPJ= models.CharField(max_length=45)
 
 
 class Supermercado(models.Model):
