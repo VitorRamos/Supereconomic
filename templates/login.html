@@ -3,7 +3,7 @@
 {% block content %}
     <h2 class="tittlePage">Entre no Sistema</h2>
     <div class="row conteudo">
-        <form role="form" action="" method="get">
+        <form role="form" action="" method="GET">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit" name="logar" class="btn btn-success">Entrar</button>
