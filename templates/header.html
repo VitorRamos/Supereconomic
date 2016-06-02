@@ -30,7 +30,7 @@
         </div>
 
         <div id="navbar" class="navbar-collapse collapse">
-            <form class="navbar-form navbar-right" method="post">
+            <form class="navbar-form navbar-right" method="get">
                 {% if not user.is_authenticated %}
                     {% csrf_token %}
                     <div class="form-group">
@@ -39,13 +39,13 @@
                     <div class="form-group">
                         <input type="password" placeholder="Senha" name="senha" class="form-control">
                     </div>
-                    <button type="submit" class="btn btn-success" name="logarGlobal">Entrar</button>
-                    <button type="submit" class="btn btn-primary" name="cadastrarGlobal">Cadastrar-se</button>
+                    <button type="submit" class="btn btn-success" formaction="/login/" name="logarGlobal">Entrar</button>
+                    <button type="submit" class="btn btn-primary" formaction="/cadastro/" name="cadastrarGlobal">Cadastrar-se</button>
                 {% endif %}
 
                 {% if user.is_authenticated %}
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger" name="sairGlobal">Sair</button>
+                    <button type="submit" class="btn btn-danger" formaction="{% url 'supermercado.views.logout' %}" name="sairGlobal">Sair</button>
                 {% endif %}
             </form>
         </div><!--/.navbar-collapse -->
