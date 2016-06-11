@@ -76,6 +76,16 @@ def cadastro(request):
 def cadastroDono(request):
     avisos_sucesso = []
     avisos_erro = []
+
+    if request.method == 'POST' and 'deletar' in request.POST:
+        donoDeletar = Dono.objects.filter(id=request.POST.get('deletar'))[0]
+        auth.models.User.objects.filter(id=donoDeletar.idEmpresario.id).delete()
+        if Dono.objects.filter(idSupermercado=donoDeletar.idSupermercado.idSupermercado).count() == 0:
+            Produto.objects.filter(idProduto__in=
+            Possui.objects.filter(idSupermercado=donoDeletar.idSupermercado).values_list('idProduto')).delete()
+            Supermercado.objects.filter(idSupermercado=donoDeletar.idSupermercado.idSupermercado).delete()
+        donoDeletar.delete()
+
     if request.method == 'POST' and 'cadastrar' in request.POST:
         form = CadastroDono(request.POST)
         if form.is_valid():
@@ -101,7 +111,7 @@ def cadastroDono(request):
     else:
         form = CadastroDono()
     return render(request, 'cadastroDono.html',
-                  {'form': form, 'avisos_erro': avisos_erro, 'avisos_sucesso': avisos_sucesso})
+                  {'form': form, 'avisos_erro': avisos_erro, 'avisos_sucesso': avisos_sucesso, 'donos':Dono.objects.all()})
 
 
 @login_required
@@ -111,9 +121,14 @@ def produtos(request):
     dono = Dono.objects.filter(idEmpresario=request.user.id)[0]
     produtos = Possui.objects.filter(idSupermercado=dono.idSupermercado)
 
+    if request.method == 'POST' and 'deletar' in request.POST:
+        if Produto.objects.filter(idProduto__in=request.POST.getlist('produtosDeletar')).exists():
+            Produto.objects.filter(idProduto__in=request.POST.getlist('produtosDeletar')).delete()
+        else:
+            avisos.append('Nenhum Produto Selecionado')
+
     if request.method == 'POST' and 'cadastrarProd' in request.POST:
         form = CadastroProd(request.POST)
-
         if form.is_valid():
             produto = Produto(nome=form.cleaned_data.get('nome'),
                               marca=form.cleaned_data.get('marca'))
@@ -135,10 +150,9 @@ def produtos(request):
 @user_passes_test(lambda u: u.groups.filter(name='Clientes').exists() == True)
 def favoritos(request):
     if request.method == 'POST' and 'deletar' in request.POST:
-        prodDeletar = Favorito.objects.filter(idProduto=request.POST.get('deletar'))[0]
-        prodDeletar.delete()
-    prodFavorito = Favorito.objects.filter(idCliente=request.user).values_list('idProduto')
-    dadosProd = Possui.objects.filter(idProduto__in=prodFavorito)
+        Favorito.objects.filter(idProduto=request.POST.get('deletar')).delete()
+    dadosProd = Possui.objects.filter(idProduto__in=Favorito.objects.filter(
+                                                    idCliente=request.user).values_list('idProduto'))
     return render(request, 'favoritos.html', {'prodFavorito': dadosProd})
 
 
@@ -150,8 +164,8 @@ def pesquisa(request):
     aviso_error = []
 
     if request.method == 'GET' and 'buscaSimples' in request.GET:
-        pesAux = Produto.objects.filter(nome__icontains=request.GET.get('buscaNome'))
-        pesquisas = Possui.objects.filter(idProduto__in=pesAux).order_by("idProduto__nome")
+        pesquisas = Possui.objects.filter(idProduto__in=Produto.objects.filter(
+        nome__icontains=request.GET.get('buscaNome'))).order_by("idProduto__nome")
 
     if request.method == 'POST' and 'favoritar' in request.POST:
         favoritos = request.POST.getlist('favoritos')
