@@ -142,7 +142,7 @@ def favoritos(request):
         prodDeletar = Favorito.objects.filter(idProduto=request.POST.get('deletar'))[0]
         prodDeletar.delete()
     prodFavorito = Favorito.objects.filter(idCliente=request.user).values_list('idProduto')
-    dadosProd = Possui.objects.filter(idProduto__in=prodFavorito)
+    dadosProd = Possui.objects.filter(idProduto__in=prodFavorito).order_by("idProduto__nome")
     return render(request, 'favoritos.html', {'prodFavorito': dadosProd})
 
 
