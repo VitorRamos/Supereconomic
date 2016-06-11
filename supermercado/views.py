@@ -141,7 +141,7 @@ def produtos(request):
         form = CadastroProd()
 
     dono = Dono.objects.filter(idEmpresario=request.user.id)[0]
-    produtos = Possui.objects.filter(idSupermercado=dono.idSupermercado)
+    produtos = Possui.objects.filter(idSupermercado=dono.idSupermercado).order_by("idProduto__nome")
     return render(request, 'produtos.html', {'form': form, 'avisos': avisos,
                                              'produtos': produtos})
 
@@ -165,7 +165,7 @@ def pesquisa(request):
     pesquisas = []
     if request.method == 'GET' and 'buscaSimples' in request.GET:
         pesAux = Produto.objects.filter(nome__icontains=request.GET.get('buscaNome'))
-        pesquisas = Possui.objects.filter(idProduto__in=pesAux)
+        pesquisas = Possui.objects.filter(idProduto__in=pesAux).order_by("idProduto__nome")
 
     aviso_sucess = []
     aviso_error = []
