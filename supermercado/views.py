@@ -98,8 +98,6 @@ def cadastroDono(request):
                 avisos_sucesso.append('Cadastrado Com Sucesso')
             else:
                 avisos_erro.append('Usuario ja existe')
-        else:
-            avisos_erro.append('Erro Formulario')
     else:
         form = CadastroDono()
     return render(request, 'cadastroDono.html',
@@ -126,8 +124,6 @@ def produtos(request):
                             quantidade=form.cleaned_data.get('quantidade'))
             possui.save()
             form = CadastroProd()
-        else:
-            avisos.append('Produto Invalido')
     else:
         form = CadastroProd()
 
