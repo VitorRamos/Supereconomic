@@ -52,18 +52,16 @@ def cadastro(request):
         form = CadastroForm(request.POST)
 
         if form.is_valid():
-            if auth.models.User.objects.filter(username=form.cleaned_data.get('nome')).count() == 0:
-                grupo = auth.models.Group.objects.get(name='Clientes')
-                user = auth.models.User.objects.create_user(form.cleaned_data.get('nome'),
-                                                            'emal', form.cleaned_data.get('senha'))
+            if not auth.models.User.objects.filter(username=form.cleaned_data.get('nome')).exists():
+                grupo = auth.models.Group.objects.get_or_create(name='Clientes')[0]
+                user = auth.models.User.objects.create_user(form.cleaned_data.get('nome'),'emal',
+                                                            form.cleaned_data.get('senha'))
                 user.groups.add(grupo)
                 user.save()
-                # avisos.append('Cadastrado Com Sucesso')
                 user = auth.authenticate(username=form.cleaned_data.get('nome'),
                                          password=form.cleaned_data.get('senha'))
                 auth.login(request, user)
                 return HttpResponseRedirect('/')
-
             else:
                 avisos.append('Usuario ja existe')
                 form = CadastroForm()
@@ -81,25 +79,15 @@ def cadastroDono(request):
     if request.method == 'POST' and 'cadastrar' in request.POST:
         form = CadastroDono(request.POST)
         if form.is_valid():
-            if auth.models.User.objects.filter(username=form.cleaned_data.get('nome')).exists():
-                avisos_erro.append('Usuario ja existe')
-            else:
-                grupo = auth.models.Group.objects.get(name='Donos')
-                user = auth.models.User.objects.create_user(form.cleaned_data.get('nome'),
-                                                            'emal',
+            if not auth.models.User.objects.filter(username=form.cleaned_data.get('nome')).exists():
+                grupo = auth.models.Group.objects.get_or_create(name='Donos')[0]
+                user = auth.models.User.objects.create_user(form.cleaned_data.get('nome'),'emal',
                                                             form.cleaned_data.get('senha'))
                 user.groups.add(grupo)
                 user.save()
-                supermercado = Supermercado()
-                # @TODO ver isso
-                if Supermercado.objects.filter(nome=form.cleaned_data.get('nomeSupermercado'),
-                                               localizacao=form.cleaned_data.get('localizacao')).exists():
-                    supermercado = Supermercado.objects.filter(nome=form.cleaned_data.get('nomeSupermercado'),
-                                                               localizacao=form.cleaned_data.get('localizacao'))[0]
-                else:
-                    supermercado = Supermercado(nome=form.cleaned_data.get('nomeSupermercado'),
-                                                localizacao=form.cleaned_data.get('localizacao'))
-                supermercado.save()
+                supermercado= Supermercado.objects.get_or_create(
+                               nome=form.cleaned_data.get('nomeSupermercado'),
+                               localizacao=form.cleaned_data.get('localizacao'))[0]
 
                 dono = Dono(idEmpresario=user,
                             idSupermercado=supermercado,
@@ -108,6 +96,8 @@ def cadastroDono(request):
 
                 form = CadastroDono()
                 avisos_sucesso.append('Cadastrado Com Sucesso')
+            else:
+                avisos_erro.append('Usuario ja existe')
         else:
             avisos_erro.append('Erro Formulario')
     else:
@@ -120,12 +110,13 @@ def cadastroDono(request):
 @user_passes_test(lambda u: u.groups.filter(name='Donos').exists() == True)
 def produtos(request):
     avisos = []
+    dono = Dono.objects.filter(idEmpresario=request.user.id)[0]
+    produtos = Possui.objects.filter(idSupermercado=dono.idSupermercado)
+
     if request.method == 'POST' and 'cadastrarProd' in request.POST:
         form = CadastroProd(request.POST)
 
         if form.is_valid():
-            dono = Dono.objects.filter(idEmpresario=request.user.id)[0]
-
             produto = Produto(nome=form.cleaned_data.get('nome'),
                               marca=form.cleaned_data.get('marca'))
             produto.save()
@@ -140,22 +131,18 @@ def produtos(request):
     else:
         form = CadastroProd()
 
-    dono = Dono.objects.filter(idEmpresario=request.user.id)[0]
-    produtos = Possui.objects.filter(idSupermercado=dono.idSupermercado).order_by("idProduto__nome")
     return render(request, 'produtos.html', {'form': form, 'avisos': avisos,
-                                             'produtos': produtos})
+                                             'produtos': produtos.order_by("idProduto__nome")})
 
 
 @login_required
 @user_passes_test(lambda u: u.groups.filter(name='Clientes').exists() == True)
 def favoritos(request):
-    prodFavorito = Favorito.objects.filter(idCliente=request.user).values_list('idProduto')
-    dadosProd = Possui.objects.filter(idProduto__in=prodFavorito)
-
     if request.method == 'POST' and 'deletar' in request.POST:
         prodDeletar = Favorito.objects.filter(idProduto=request.POST.get('deletar'))[0]
         prodDeletar.delete()
-
+    prodFavorito = Favorito.objects.filter(idCliente=request.user).values_list('idProduto')
+    dadosProd = Possui.objects.filter(idProduto__in=prodFavorito)
     return render(request, 'favoritos.html', {'prodFavorito': dadosProd})
 
 
@@ -163,12 +150,12 @@ def favoritos(request):
 @user_passes_test(lambda u: u.groups.filter(name='Clientes').exists() == True)
 def pesquisa(request):
     pesquisas = []
+    aviso_sucess = []
+    aviso_error = []
+
     if request.method == 'GET' and 'buscaSimples' in request.GET:
         pesAux = Produto.objects.filter(nome__icontains=request.GET.get('buscaNome'))
         pesquisas = Possui.objects.filter(idProduto__in=pesAux).order_by("idProduto__nome")
-
-    aviso_sucess = []
-    aviso_error = []
 
     if request.method == 'POST' and 'favoritar' in request.POST:
         favoritos = request.POST.getlist('favoritos')
