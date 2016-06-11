@@ -87,12 +87,16 @@ def cadastroDono(request):
                                                             form.cleaned_data.get('senha'))
                 user.groups.add(grupo)
                 user.save()
-                supermercado= Supermercado.objects.filter(nome=form.cleaned_data.get('nomeSupermercado'),
-                                               localizacao=form.cleaned_data.get('localizacao'))[0]
-                if not supermercado.exists():
+                supermercado= Supermercado()
+                # @TODO ver isso
+                if Supermercado.objects.filter(nome=form.cleaned_data.get('nomeSupermercado'),
+                               localizacao=form.cleaned_data.get('localizacao')).exists():
+                    supermercado= Supermercado.objects.filter(nome=form.cleaned_data.get('nomeSupermercado'),
+                               localizacao=form.cleaned_data.get('localizacao'))[0]
+                else:
                     supermercado = Supermercado(nome= form.cleaned_data.get('nomeSupermercado'),
                                             localizacao= form.cleaned_data.get('localizacao'))
-                    supermercado.save()
+                supermercado.save()
 
                 dono = Dono(idEmpresario= user,
                             idSupermercado= supermercado,
