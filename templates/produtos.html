@@ -10,31 +10,36 @@
                 <button type="submit" name="cadastrarProd" class="btn btn-success">Cadastrar</button>
             </form>
 
-            <table class="table">
-                <caption>Produtos Cadastrados</caption>
-                <thead>
-                <tr>
-                    <th>Produto</th>
-                    <th>Marca</th>
-                    <th>Supermercado</th>
-                    <th>Preco</th>
-                    <th>Quantidade</th>
-                </tr>
-                </thead>
-
-                <tbody>
-                {% for produto in produtos %}
+            <form method="POST">
+                {% csrf_token %}
+                <table class="table">
+                    <caption>Produtos Cadastrados</caption>
+                    <thead>
                     <tr>
-                        <td>{{produto.idProduto.nome}}</td>
-                        <td>{{produto.idProduto.marca}}</td>
-                        <td>{{produto.idSupermercado.nome}}</td>
-                        <td>R$ {{produto.preco}}</td>
-                        <td>{{produto.quantidade}}</td>
+                        <th></th>
+                        <th>Produto</th>
+                        <th>Marca</th>
+                        <th>Supermercado</th>
+                        <th>Preco</th>
+                        <th>Quantidade</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
 
+                    <tbody>
+                    {% for produto in produtos %}
+                        <tr>
+                            <td><input type="checkbox" value="{{ produto.idProduto.idProduto }}" name="produtosDeletar"></td>
+                            <td>{{produto.idProduto.nome}}</td>
+                            <td>{{produto.idProduto.marca}}</td>
+                            <td>{{produto.idSupermercado.nome}}</td>
+                            <td>R$ {{produto.preco}}</td>
+                            <td>{{produto.quantidade}}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <button name="deletar" type="submit" class="btn btn-primary">Deletar</button>
+            </form>
             {% for aviso in avisos %}
                 <div class="alert alert-danger" role="alert">
                     <p>{{aviso}}</p>

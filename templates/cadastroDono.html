@@ -9,16 +9,44 @@
                 {{ form.as_p }}
                 <button type="submit" name="cadastrar" class="btn btn-success">Cadastrar</button>
             </form>
+        <form method="POST">
+            {% csrf_token %}
+            <table class="table">
+                <caption>Donos Cadastrados</caption>
+                <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>CNPJ</th>
+                    <th>Supermercado</th>
+                    <th>Localizacao Supermercado</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for dono in donos %}
+                    <tr>
+                        <td>{{dono.idEmpresario.username}}</td>
+                        <td>{{dono.CNPJ}}</td>
+                        <td>{{dono.idSupermercado.nome}}</td>
+                        <td>{{dono.idSupermercado.localizacao}}</td>
+                        <td><button type="submit" value="{{ dono.id }}"
+                                            class="glyphicon glyphicon-remove" name="deletar"></button></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </form>
+        {% for aviso in avisos_sucesso %}
+            <div class="alert alert-success" role="alert">
+                <p>{{aviso}}</p>
+            </div>
+        {%  endfor %}
+        {% for aviso in avisos_erro %}
+            <div class="alert alert-danger" role="alert">
+                <p>{{aviso}}</p>
+            </div>
+        {%  endfor %}
         </div>
     </div>
-    {% for aviso in avisos_sucesso %}
-        <div class="alert alert-success" role="alert">
-            <p>{{aviso}}</p>
-        </div>
-    {%  endfor %}
-    {% for aviso in avisos_erro %}
-        <div class="alert alert-danger" role="alert">
-            <p>{{aviso}}</p>
-        </div>
-    {%  endfor %}
 {% endblock %}
