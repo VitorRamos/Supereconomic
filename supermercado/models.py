@@ -26,7 +26,7 @@ class Produto(models.Model):
 class Possui(models.Model):
     class Meta:
         unique_together = (("idSupermercado", "idProduto"))
-    idSupermercado = models.ForeignKey(Supermercado)
+    idSupermercado = models.ForeignKey(Supermercado, on_delete = models.CASCADE)
     idProduto = models.ForeignKey(Produto)
     quantidade = models.IntegerField()
     preco = models.FloatField()
@@ -36,4 +36,4 @@ class Favorito(models.Model):
     class Meta:
         unique_together = (("idCliente", "idProduto"))
     idCliente = models.ForeignKey(User)
-    idProduto = models.ForeignKey(Produto)
+    idProduto = models.ForeignKey(Produto, on_delete = models.CASCADE)
