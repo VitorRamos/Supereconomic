@@ -53,35 +53,31 @@
 </nav>
 ​
 <div class="row">
-    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-sm-3 col-md-2 sidebar menu">
-        <ul class="nav nav-sidebar nav-pills nav-stacked navmenuWord">
-            <li class="{% if '/' == request.path %}active{% endif %}"><a href='/'>Home</a></li>
-            {% if not user.is_authenticated %}
-                <li class="{% if '/login/' == request.path %}active{% endif %}"><a href='/login/'>login</a></li>
-                <li class="{% if '/cadastro/' == request.path %}active{% endif %}"><a href='/cadastro'>cadastrar-se</a></li>
-            {% endif %}
-            {% if user.groups.all.0.name == 'Clientes' %}
-                <li class="{% if '/favoritos/' == request.path %}active{% endif %}"><a href='/favoritos'>favoritos</a> </li>
-            {% endif %}
-            {% if user.groups.all.0.name == 'Donos' %}
-                <li class="{% if '/produtos/' == request.path %}active{% endif %}"><a href='/produtos'>produtos</a> </li>
-            {% endif %}
-            {% if user.groups.all.0.name == 'Clientes' %}
-                <li class="{% if '/pesquisa/' == request.path %}active{% endif %}"><a href='/pesquisa'>Pesquisa</a> </li>
-            {% endif %}
-            {% if user.is_superuser %}
-                <li class="{% if '/cadastroDono/' == request.path %}active{% endif %}"><a href='/cadastroDono'>cadastroDono</a> </li>
-            {% endif %}
-            <li class="{% if '/sobre/' == request.path %}active{% endif %}"><a href='/sobre'>sobre</a> </li>
-        </ul>
-    </div>
-    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-lg-offset-2 col-xs-offset-2 col-sm-offset-2 col-md-offset-2">
-        ​
+    {% if user.is_authenticated %}
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-sm-3 col-md-2 sidebar menu">
+            <ul class="nav nav-sidebar nav-pills nav-stacked navmenuWord">
+                <li class="{% if '/' == request.path %}active{% endif %}"><a href='/'>Home</a></li>
+                {% if user.groups.all.0.name == 'Clientes' %}
+                    <li class="{% if '/favoritos/' == request.path %}active{% endif %}"><a href='/favoritos'>favoritos</a> </li>
+                {% endif %}
+                {% if user.groups.all.0.name == 'Donos' %}
+                    <li class="{% if '/produtos/' == request.path %}active{% endif %}"><a href='/produtos'>produtos</a> </li>
+                {% endif %}
+                {% if user.groups.all.0.name == 'Clientes' %}
+                    <li class="{% if '/pesquisa/' == request.path %}active{% endif %}"><a href='/pesquisa'>Pesquisa</a> </li>
+                {% endif %}
+                {% if user.is_superuser %}
+                    <li class="{% if '/cadastroDono/' == request.path %}active{% endif %}"><a href='/cadastroDono'>cadastroDono</a> </li>
+                {% endif %}
+                <li class="{% if '/sobre/' == request.path %}active{% endif %}"><a href='/sobre'>sobre</a> </li>
+            </ul>
+        </div>
+    {% endif %}
         <div class='container-fluid'>
             {% block content %}
             {% endblock %}
         </div>
-    </div>
+{#    </div>#}
 </div>
 
 <footer>

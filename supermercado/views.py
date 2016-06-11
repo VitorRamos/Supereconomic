@@ -9,12 +9,15 @@ from models import Dono, Supermercado, Favorito, Possui, Produto
 
 
 def index(request):
-    return render(request, 'home.html')
+    if request.user.is_authenticated():
+        return render(request, 'home.html')
+    else:
+        return render(request, 'index.html')
 
 
 @user_passes_test(lambda user: user.is_authenticated() == False)
 def login(request):
-    avisos= []
+    avisos = []
 
     if request.method == 'GET' and ('logar' in request.GET or 'logarGlobal' in request.GET):
         form = LoginForm(request.GET)
@@ -73,8 +76,8 @@ def cadastro(request):
 @login_required
 @permission_required('is_superuser')
 def cadastroDono(request):
-    avisos_sucesso= []
-    avisos_erro= []
+    avisos_sucesso = []
+    avisos_erro = []
     if request.method == 'POST' and 'cadastrar' in request.POST:
         form = CadastroDono(request.POST)
         if form.is_valid():
@@ -88,6 +91,7 @@ def cadastroDono(request):
                 user.groups.add(grupo)
                 user.save()
                 #supermercado= Supermercado()
+                supermercado = Supermercado()
                 # @TODO ver isso
 
                 supermercado= Supermercado.objects.get_or_create(
@@ -95,9 +99,17 @@ def cadastroDono(request):
                                localizacao=form.cleaned_data.get('localizacao'))[0]
 
                 #supermercado.save()
+                if Supermercado.objects.filter(nome=form.cleaned_data.get('nomeSupermercado'),
+                                               localizacao=form.cleaned_data.get('localizacao')).exists():
+                    supermercado = Supermercado.objects.filter(nome=form.cleaned_data.get('nomeSupermercado'),
+                                                               localizacao=form.cleaned_data.get('localizacao'))[0]
+                else:
+                    supermercado = Supermercado(nome=form.cleaned_data.get('nomeSupermercado'),
+                                                localizacao=form.cleaned_data.get('localizacao'))
+                supermercado.save()
 
-                dono = Dono(idEmpresario= user,
-                            idSupermercado= supermercado,
+                dono = Dono(idEmpresario=user,
+                            idSupermercado=supermercado,
                             CNPJ=form.cleaned_data.get('CNPJ'))
                 dono.save()
 
@@ -106,8 +118,9 @@ def cadastroDono(request):
         else:
             avisos_erro.append('Erro Formulario')
     else:
-        form= CadastroDono()
-    return render(request, 'cadastroDono.html', {'form':form, 'avisos_erro':avisos_erro, 'avisos_sucesso':avisos_sucesso})
+        form = CadastroDono()
+    return render(request, 'cadastroDono.html',
+                  {'form': form, 'avisos_erro': avisos_erro, 'avisos_sucesso': avisos_sucesso})
 
 
 @login_required
@@ -123,10 +136,10 @@ def produtos(request):
             produto = Produto(nome=form.cleaned_data.get('nome'),
                               marca=form.cleaned_data.get('marca'))
             produto.save()
-            possui = Possui(idProduto= produto,
+            possui = Possui(idProduto=produto,
                             idSupermercado=dono.idSupermercado,
                             preco=form.cleaned_data.get('preco'),
-                            quantidade= form.cleaned_data.get('quantidade'))
+                            quantidade=form.cleaned_data.get('quantidade'))
             possui.save()
             form = CadastroProd()
         else:
@@ -147,10 +160,10 @@ def favoritos(request):
     dadosProd = Possui.objects.filter(idProduto__in=prodFavorito)
 
     if request.method == 'POST' and 'deletar' in request.POST:
-        prodDeletar= Favorito.objects.filter(idProduto=request.POST.get('deletar'))[0]
+        prodDeletar = Favorito.objects.filter(idProduto=request.POST.get('deletar'))[0]
         prodDeletar.delete()
 
-    return render(request, 'favoritos.html', {'prodFavorito':dadosProd})
+    return render(request, 'favoritos.html', {'prodFavorito': dadosProd})
 
 
 @login_required
@@ -158,8 +171,8 @@ def favoritos(request):
 def pesquisa(request):
     pesquisas = []
     if request.method == 'GET' and 'buscaSimples' in request.GET:
-        pesAux = Produto.objects.filter(nome__icontains = request.GET.get('buscaNome'))
-        pesquisas = Possui.objects.filter(idProduto__in = pesAux)
+        pesAux = Produto.objects.filter(nome__icontains=request.GET.get('buscaNome'))
+        pesquisas = Possui.objects.filter(idProduto__in=pesAux)
 
     aviso_sucess = []
     aviso_error = []
@@ -168,14 +181,15 @@ def pesquisa(request):
         favoritos = request.POST.getlist('favoritos')
         for id in favoritos:
             produtoFavorito = Produto.objects.filter(idProduto=id)[0]
-            if not Favorito.objects.filter(idProduto=produtoFavorito, idCliente=request.user).exists() :
+            if not Favorito.objects.filter(idProduto=produtoFavorito, idCliente=request.user).exists():
                 favorito = Favorito(idProduto=produtoFavorito, idCliente=request.user)
                 favorito.save()
-                aviso_sucess.append(produtoFavorito.nome+' cadastrado com sucesso ' )
+                aviso_sucess.append(produtoFavorito.nome + ' cadastrado com sucesso ')
             else:
                 aviso_error.append('Esse produto ja esta nos seus favoritos')
 
-    return render(request, 'pesquisa.html', {'pesquisa':pesquisas, 'aviso_sucess':aviso_sucess, 'aviso_error':aviso_error})
+    return render(request, 'pesquisa.html',
+                  {'pesquisa': pesquisas, 'aviso_sucess': aviso_sucess, 'aviso_error': aviso_error})
 
 
 def sobre(request):
