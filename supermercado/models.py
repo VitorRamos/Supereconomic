@@ -37,3 +37,11 @@ class Favorito(models.Model):
         unique_together = (("idCliente", "idProduto"))
     idCliente = models.ForeignKey(User)
     idProduto = models.ForeignKey(Produto, on_delete = models.CASCADE)
+
+
+class Carrinho(models.Model):
+    class Meta:
+        unique_together = (("idCliente", "idProduto"))
+
+    idCliente = models.ForeignKey(User)
+    idProduto = models.ForeignKey(Produto, on_delete=models.CASCADE)

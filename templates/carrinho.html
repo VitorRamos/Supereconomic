@@ -5,33 +5,43 @@
         <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-lg-offset-2 col-xs-offset-2 col-sm-offset-2 col-md-offset-2">
             <p>Carrinho</p>
 
-            <form method="POST">
-                {% csrf_token %}
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Produto</th>
-                        <th>Marca</th>
-                        <th>Supermercado</th>
-                        <th>Preco</th>
-                        <th>Remover</th>
-                    </tr>
-                    </thead>
 
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Marca</th>
+                    <th>Supermercado</th>
+                    <th>Preco</th>
+                    <th>Quantidade</th>
+                    <th>Remover</th>
+                </tr>
+                </thead>
+
+                <form method="POST">
+                    {% csrf_token %}
                     <tbody>
-                    {% for produto in prodFavorito %}
+                    {% for produto in prodCarrinho %}
                         <tr>
                             <td>{{produto.idProduto.nome}}</td>
                             <td>{{produto.idProduto.marca}}</td>
                             <td>{{produto.idSupermercado.nome}}</td>
                             <td>{{produto.preco}}</td>
+                            <td><input type="number" name="quantidade" typeof="float" value="1"></td>
                             <td><button type="submit" value="{{ produto.idProduto.idProduto }}"
                                         class="glyphicon glyphicon-remove" name="deletar"></button></td>
                         </tr>
                     {% endfor %}
-                    </tbody>
-                </table>
-            </form>
+                    <tr>
+                        <td>Total: </td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ TotalCarrinho }}</td>
+                        <td></td>
+                        <td><button type="submit" name="calcular">Calcular</button></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 {% endblock %}

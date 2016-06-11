@@ -6,7 +6,9 @@ from django.contrib.auth.decorators import user_passes_test
 
 from forms import LoginForm, CadastroForm, CadastroDono, CadastroProd
 from models import Dono, Supermercado, Favorito, Possui, Produto
+from supermercado.models import Carrinho
 
+from django.db.models import Sum
 
 def index(request):
     if request.user.is_authenticated():
@@ -153,12 +155,26 @@ def produtos(request):
 def favoritos(request):
     if request.method == 'POST' and 'deletar' in request.POST:
         Favorito.objects.filter(idProduto=request.POST.get('deletar')).delete()
+
     dadosProd = Possui.objects.filter(idProduto__in=Favorito.objects.filter(
                                                     idCliente=request.user).values_list('idProduto'))
     return render(request, 'favoritos.html', {'prodFavorito': dadosProd})
 
 def carrinho(request):
-    return render(request, 'carrinho.html')
+    if request.method == 'POST' and 'deletar' in request.POST:
+        Carrinho.objects.filter(idProduto=request.POST.get('deletar')).delete()
+
+    dadosProd = Possui.objects.filter(idProduto__in=Carrinho.objects.filter(
+        idCliente=request.user).values_list('idProduto'))
+    TotalCarrinho = 0
+    if request.method == 'POST' and 'calcular' in request.POST:
+        qnt = map(float,request.POST.getlist('quantidade'))
+        prods = Possui.objects.filter(idProduto__in=Carrinho.objects.all().values_list('idProduto'))
+        for x in range(0, Carrinho.objects.all().count()):
+            TotalCarrinho= TotalCarrinho+prods[x].preco*qnt[x]
+        # TotalCarrinho= Possui.objects.filter(
+        # idProduto__in=Carrinho.objects.all().values_list('idProduto')).aggregate(total=Sum('preco')).get('total')
+    return render(request, 'carrinho.html', {'prodCarrinho': dadosProd, 'TotalCarrinho':TotalCarrinho})
 
 @login_required
 @user_passes_test(lambda u: u.groups.filter(name='Clientes').exists() == True)
@@ -172,7 +188,8 @@ def pesquisa(request):
         nome__icontains=request.GET.get('buscaNome'))).order_by("idProduto__nome")
 
     if request.method == 'POST' and 'favoritar' in request.POST:
-        favoritos = request.POST.getlist('favoritos')
+        favoritos = request.POST.getlist('prodSel')
+        #TODO aviso nada selecionado
         for id in favoritos:
             produtoFavorito = Produto.objects.filter(idProduto=id)[0]
             if not Favorito.objects.filter(idProduto=produtoFavorito, idCliente=request.user).exists():
@@ -183,6 +200,20 @@ def pesquisa(request):
                 # return HttpResponseRedirect('/pesquisa')
             else:
                 aviso_error.append('Esse produto ja esta nos seus favoritos')
+
+    if request.method == 'POST' and 'carrinho' in request.POST:
+        carrinhoProd = request.POST.getlist('prodSel')
+        # TODO aviso nada selecionado
+        for id in carrinhoProd:
+            produtoCarrinho = Produto.objects.filter(idProduto=id)[0]
+            if not Carrinho.objects.filter(idProduto=produtoCarrinho, idCliente=request.user).exists():
+                carrinho_ = Carrinho(idProduto=produtoCarrinho, idCliente=request.user)
+                carrinho_.save()
+                aviso_sucess.append(produtoCarrinho.nome + ' colocado no carrinho')
+                # TODO reenvio de formulario
+                # return HttpResponseRedirect('/pesquisa')
+            else:
+                aviso_error.append('ja esta no seu carrinho')
 
     return render(request, 'pesquisa.html',
                   {'pesquisa': pesquisas, 'aviso_sucess': aviso_sucess, 'aviso_error': aviso_error,

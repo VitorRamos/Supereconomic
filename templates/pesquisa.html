@@ -30,7 +30,7 @@
                     <tbody>
                     {% for produto in pesquisa %}
                         <tr>
-                            <td><input type="checkbox" value="{{ produto.idProduto.idProduto }}"  name="favoritos"></td>
+                            <td><input type="checkbox" value="{{ produto.idProduto.idProduto }}"  name="prodSel"></td>
                             <td><span class={% if produto in favoritos %}
                                               "glyphicon glyphicon-star"
                                             {% else %} "" {% endif %}aria-hidden="true" ></span></td>
@@ -43,6 +43,7 @@
                     </tbody>
                 </table>
                 <button name="favoritar" type="submit" class="btn btn-primary">Favoritar</button>
+                <button name="carrinho" type="submit" class="btn btn-primary">Carrinho</button>
             </form>
             {% for aviso in aviso_sucess %}
                 <div class="alert alert-success" role="alert">
