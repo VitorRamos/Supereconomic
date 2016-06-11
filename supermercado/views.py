@@ -50,7 +50,7 @@ def cadastro(request):
 
         if form.is_valid():
             if auth.models.User.objects.filter(username=form.cleaned_data.get('nome')).count() == 0:
-                grupo = auth.models.Group.objects.get(name='Clientes')
+                grupo = auth.models.Group.objects.get_or_create(name='Clientes')[0]
                 user = auth.models.User.objects.create_user(form.cleaned_data.get('nome'),
                                                             'emal', form.cleaned_data.get('senha'))
                 user.groups.add(grupo)
@@ -81,22 +81,20 @@ def cadastroDono(request):
             if auth.models.User.objects.filter(username=form.cleaned_data.get('nome')).exists():
                 avisos_erro.append('Usuario ja existe')
             else:
-                grupo = auth.models.Group.objects.get(name='Donos')
+                grupo = auth.models.Group.objects.get_or_create(name='Donos')[0]
                 user = auth.models.User.objects.create_user(form.cleaned_data.get('nome'),
                                                             'emal',
                                                             form.cleaned_data.get('senha'))
                 user.groups.add(grupo)
                 user.save()
-                supermercado= Supermercado()
+                #supermercado= Supermercado()
                 # @TODO ver isso
-                if Supermercado.objects.filter(nome=form.cleaned_data.get('nomeSupermercado'),
-                               localizacao=form.cleaned_data.get('localizacao')).exists():
-                    supermercado= Supermercado.objects.filter(nome=form.cleaned_data.get('nomeSupermercado'),
+
+                supermercado= Supermercado.objects.get_or_create(
+                               nome=form.cleaned_data.get('nomeSupermercado'),
                                localizacao=form.cleaned_data.get('localizacao'))[0]
-                else:
-                    supermercado = Supermercado(nome= form.cleaned_data.get('nomeSupermercado'),
-                                            localizacao= form.cleaned_data.get('localizacao'))
-                supermercado.save()
+
+                #supermercado.save()
 
                 dono = Dono(idEmpresario= user,
                             idSupermercado= supermercado,
