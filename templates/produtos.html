@@ -36,7 +36,9 @@
             </table>
 
             {% for aviso in avisos %}
-                <p>{{aviso}}</p>
+                <div class="alert alert-danger" role="alert">
+                    <p>{{aviso}}</p>
+                </div>
             {%  endfor %}
         </div>
     </div>
