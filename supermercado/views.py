@@ -138,13 +138,11 @@ def produtos(request):
 @login_required
 @user_passes_test(lambda u: u.groups.filter(name='Clientes').exists() == True)
 def favoritos(request):
-    prodFavorito = Favorito.objects.filter(idCliente=request.user).values_list('idProduto')
-    dadosProd = Possui.objects.filter(idProduto__in=prodFavorito)
-
     if request.method == 'POST' and 'deletar' in request.POST:
         prodDeletar = Favorito.objects.filter(idProduto=request.POST.get('deletar'))[0]
         prodDeletar.delete()
-
+    prodFavorito = Favorito.objects.filter(idCliente=request.user).values_list('idProduto')
+    dadosProd = Possui.objects.filter(idProduto__in=prodFavorito)
     return render(request, 'favoritos.html', {'prodFavorito': dadosProd})
 
 
