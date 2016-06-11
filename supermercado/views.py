@@ -106,6 +106,7 @@ def cadastroDono(request):
 
                 form = CadastroDono()
                 avisos_sucesso.append('Cadastrado Com Sucesso')
+                return HttpResponseRedirect('/cadastroDono')
             else:
                 avisos_erro.append('Usuario ja existe')
     else:
@@ -139,6 +140,7 @@ def produtos(request):
                             quantidade=form.cleaned_data.get('quantidade'))
             possui.save()
             form = CadastroProd()
+            return HttpResponseRedirect('/produtos')
     else:
         form = CadastroProd()
 
@@ -155,6 +157,8 @@ def favoritos(request):
                                                     idCliente=request.user).values_list('idProduto'))
     return render(request, 'favoritos.html', {'prodFavorito': dadosProd})
 
+def carrinho(request):
+    return render(request, 'carrinho.html')
 
 @login_required
 @user_passes_test(lambda u: u.groups.filter(name='Clientes').exists() == True)
@@ -175,11 +179,14 @@ def pesquisa(request):
                 favorito = Favorito(idProduto=produtoFavorito, idCliente=request.user)
                 favorito.save()
                 aviso_sucess.append(produtoFavorito.nome + ' cadastrado com sucesso ')
+                #TODO reenvio de formulario
+                # return HttpResponseRedirect('/pesquisa')
             else:
                 aviso_error.append('Esse produto ja esta nos seus favoritos')
 
     return render(request, 'pesquisa.html',
-                  {'pesquisa': pesquisas, 'aviso_sucess': aviso_sucess, 'aviso_error': aviso_error})
+                  {'pesquisa': pesquisas, 'aviso_sucess': aviso_sucess, 'aviso_error': aviso_error,
+                   'favoritos': Possui.objects.filter(idProduto__in=Favorito.objects.filter(idCliente=request.user.id).values('idProduto'))})
 
 
 def sobre(request):

@@ -18,6 +18,7 @@
                     <thead>
                     <tr>
                         <th></th>
+                        <th></th>
                         <th>Produto</th>
                         <th>Marca</th>
                         <th>Supermercado</th>
@@ -29,12 +30,14 @@
                     <tbody>
                     {% for produto in pesquisa %}
                         <tr>
-                            <td><input type="checkbox" value="{{ produto.idProduto.idProduto }}" name="favoritos"></td>
+                            <td><input type="checkbox" value="{{ produto.idProduto.idProduto }}"  name="favoritos"></td>
+                            <td><span class={% if produto in favoritos %}
+                                              "glyphicon glyphicon-star"
+                                            {% else %} "" {% endif %}aria-hidden="true" ></span></td>
                             <td>{{produto.idProduto.nome}}</td>
                             <td>{{produto.idProduto.marca}}</td>
                             <td>{{produto.idSupermercado.nome}}</td>
                             <td>{{produto.preco}}</td>
-                            {#                <td>{{produto.quantidade}}</td>#}
                         </tr>
                     {% endfor %}
                     </tbody>

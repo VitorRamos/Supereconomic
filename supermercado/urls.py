@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^cadastroDono/$', cadastroDono, name='dono'),
     url(r'^produtos/$', produtos, name='produtos'),
     url(r'^favoritos/$', favoritos, name='favoritos'),
+    url(r'^carrinho/$', carrinho, name='carrinho'),
     url(r'^pesquisa/$', pesquisa, name='pesquisa'),
     url(r'^sobre/$', sobre, name='sobre')
 ]
