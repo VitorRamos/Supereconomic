@@ -21,6 +21,7 @@ class Produto(models.Model):
     idProduto= models.AutoField(primary_key=True, auto_created=True)
     nome= models.CharField(max_length=45)
     marca= models.CharField(max_length=45)
+    tipo= models.CharField(max_length=45)
 
 
 class Possui(models.Model):

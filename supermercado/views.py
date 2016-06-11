@@ -118,7 +118,8 @@ def produtos(request):
 
         if form.is_valid():
             produto = Produto(nome=form.cleaned_data.get('nome'),
-                              marca=form.cleaned_data.get('marca'))
+                              marca=form.cleaned_data.get('marca'),
+                              tipo=request.POST.getlist('tipo'))
             produto.save()
             possui = Possui(idProduto=produto,
                             idSupermercado=dono.idSupermercado,

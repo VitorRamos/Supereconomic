@@ -10,48 +10,49 @@
                     <input type="text" name="buscaNome">
                     <button type="submit" name="buscaSimples"><i class="glyphicon glyphicon-search"></i></button>
                 </form>
-            </div>
-            <form method="POST">
-                {% csrf_token %}
-                <table class="table">
-                    <caption>Produtos Encontrados</caption>
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th>Produto</th>
-                        <th>Marca</th>
-                        <th>Supermercado</th>
-                        <th>Preco</th>
-                        {#                <th>Quantidade</th>#}
-                    </tr>
-                    </thead>
 
-                    <tbody>
-                    {% for produto in pesquisa %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <table class="table">
+                        <caption>Produtos Encontrados</caption>
+                        <thead>
                         <tr>
-                            <td><input type="checkbox" value="{{ produto.idProduto.idProduto }}" name="favoritos"></td>
-                            <td>{{produto.idProduto.nome}}</td>
-                            <td>{{produto.idProduto.marca}}</td>
-                            <td>{{produto.idSupermercado.nome}}</td>
-                            <td>{{produto.preco}}</td>
-                            {#                <td>{{produto.quantidade}}</td>#}
+                            <th></th>
+                            <th>Produto</th>
+                            <th>Marca</th>
+                            <th>Supermercado</th>
+                            <th>Preco</th>
+                            {#<th>Quantidade</th>#}
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-                <button name="favoritar" type="submit" class="btn btn-primary">Favoritar</button>
-            </form>
-            {% for aviso in aviso_sucess %}
-                <div class="alert alert-success" role="alert">
-                    <p>{{aviso}}</p>
-                </div>
-            {%  endfor %}
+                        </thead>
 
-            {% for aviso in aviso_error %}
-                <div class="alert alert-danger" role="alert">
-                    <p>{{aviso}}</p>
-                </div>
-            {%  endfor %}
+                        <tbody>
+                        {% for produto in pesquisa %}
+                            <tr>
+                                <td><input type="checkbox" value="{{ produto.idProduto.idProduto }}" name="favoritos"></td>
+                                <td>{{produto.idProduto.nome}}</td>
+                                <td>{{produto.idProduto.marca}}</td>
+                                <td>{{produto.idSupermercado.nome}}</td>
+                                <td>{{produto.preco}}</td>
+                                {#<td>{{produto.quantidade}}</td>#}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <button name="favoritar" type="submit" class="btn btn-primary margin-bottom10px">Favoritar</button>
+                </form>
+                {% for aviso in aviso_sucess %}
+                    <div class="alert alert-success" role="alert">
+                        <p>{{aviso}}</p>
+                    </div>
+                {%  endfor %}
+
+                {% for aviso in aviso_error %}
+                    <div class="alert alert-danger" role="alert">
+                        <p>{{aviso}}</p>
+                    </div>
+                {%  endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}
