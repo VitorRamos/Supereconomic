@@ -1,33 +1,37 @@
 {%  extends "header.html" %}
 
 {% block content %}
-    <p>Favoritos</p>
+    <div class="row">
+        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-lg-offset-2 col-xs-offset-2 col-sm-offset-2 col-md-offset-2">
+            <p>Favoritos</p>
 
-    <form method="POST">
-        {% csrf_token %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Produto</th>
-                    <th>Marca</th>
-                    <th>Supermercado</th>
-                    <th>Preco</th>
-                    <th>Remover</th>
-                </tr>
-            </thead>
+            <form method="POST">
+                {% csrf_token %}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Marca</th>
+                        <th>Supermercado</th>
+                        <th>Preco</th>
+                        <th>Remover</th>
+                    </tr>
+                    </thead>
 
-            <tbody>
-                {% for produto in prodFavorito %}
-                <tr>
-                    <td>{{produto.idProduto.nome}}</td>
-                    <td>{{produto.idProduto.marca}}</td>
-                    <td>{{produto.idSupermercado.nome}}</td>
-                    <td>{{produto.preco}}</td>
-                    <td><button type="submit" value="{{ produto.idProduto.idProduto }}"
-                                class="glyphicon glyphicon-remove" name="deletar"></button></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </form>
+                    <tbody>
+                    {% for produto in prodFavorito %}
+                        <tr>
+                            <td>{{produto.idProduto.nome}}</td>
+                            <td>{{produto.idProduto.marca}}</td>
+                            <td>{{produto.idSupermercado.nome}}</td>
+                            <td>{{produto.preco}}</td>
+                            <td><button type="submit" value="{{ produto.idProduto.idProduto }}"
+                                        class="glyphicon glyphicon-remove" name="deletar"></button></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
 {% endblock %}

@@ -1,13 +1,16 @@
 {%  extends "header.html" %}
 
 {% block content %}
-    <h3 class="tittlePage">Cadastrar Dono</h3>
-    <form role="form" action="" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" name="cadastrar" class="btn btn-success">Cadastrar</button>
-    </form>
-
+    <div class="row">
+        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-lg-offset-2 col-xs-offset-2 col-sm-offset-2 col-md-offset-2">
+            <h3 class="tittlePage">Cadastrar Dono</h3>
+            <form class="text-center margin-top5px" role="form" action="" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" name="cadastrar" class="btn btn-success">Cadastrar</button>
+            </form>
+        </div>
+    </div>
     {% for aviso in avisos_sucesso %}
         <div class="alert alert-success" role="alert">
             <p>{{aviso}}</p>

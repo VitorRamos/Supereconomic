@@ -1,53 +1,57 @@
 {%  extends "header.html" %}
 
 {% block content %}
-    <h3 class="tittlePage">Pesquisa Produto</h3>
-    <div class="conteudo">
-        <form method="GET">
-            {% csrf_token %}
-            <input type="text" name="buscaNome">
-            <button type="submit" name="buscaSimples"><i class="glyphicon glyphicon-search"></i></button>
-        </form>
+    <div class="row">
+        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-lg-offset-2 col-xs-offset-2 col-sm-offset-2 col-md-offset-2">
+            <h3 class="tittlePage">Pesquisa Produto</h3>
+            <div class="conteudo">
+                <form method="GET">
+                    {% csrf_token %}
+                    <input type="text" name="buscaNome">
+                    <button type="submit" name="buscaSimples"><i class="glyphicon glyphicon-search"></i></button>
+                </form>
+            </div>
+            <form method="POST">
+                {% csrf_token %}
+                <table class="table">
+                    <caption>Produtos Encontrados</caption>
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Produto</th>
+                        <th>Marca</th>
+                        <th>Supermercado</th>
+                        <th>Preco</th>
+                        {#                <th>Quantidade</th>#}
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for produto in pesquisa %}
+                        <tr>
+                            <td><input type="checkbox" value="{{ produto.idProduto.idProduto }}" name="favoritos"></td>
+                            <td>{{produto.idProduto.nome}}</td>
+                            <td>{{produto.idProduto.marca}}</td>
+                            <td>{{produto.idSupermercado.nome}}</td>
+                            <td>{{produto.preco}}</td>
+                            {#                <td>{{produto.quantidade}}</td>#}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <button name="favoritar" type="submit" class="btn btn-primary">Favoritar</button>
+            </form>
+            {% for aviso in aviso_sucess %}
+                <div class="alert alert-success" role="alert">
+                    <p>{{aviso}}</p>
+                </div>
+            {%  endfor %}
+
+            {% for aviso in aviso_error %}
+                <div class="alert alert-danger" role="alert">
+                    <p>{{aviso}}</p>
+                </div>
+            {%  endfor %}
+        </div>
     </div>
-    <form method="POST">
-        {% csrf_token %}
-        <table class="table">
-        <caption>Produtos Encontrados</caption>
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Produto</th>
-                    <th>Marca</th>
-                    <th>Supermercado</th>
-                    <th>Preco</th>
-    {#                <th>Quantidade</th>#}
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for produto in pesquisa %}
-                <tr>
-                    <td><input type="checkbox" value="{{ produto.idProduto.idProduto }}" name="favoritos"></td>
-                    <td>{{produto.idProduto.nome}}</td>
-                    <td>{{produto.idProduto.marca}}</td>
-                    <td>{{produto.idSupermercado.nome}}</td>
-                    <td>{{produto.preco}}</td>
-    {#                <td>{{produto.quantidade}}</td>#}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <button name="favoritar" type="submit" class="btn btn-primary">Favoritar</button>
-    </form>
-     {% for aviso in aviso_sucess %}
-        <div class="alert alert-success" role="alert">
-            <p>{{aviso}}</p>
-        </div>
-    {%  endfor %}
-
-    {% for aviso in aviso_error %}
-        <div class="alert alert-danger" role="alert">
-            <p>{{aviso}}</p>
-        </div>
-    {%  endfor %}
 {% endblock %}
