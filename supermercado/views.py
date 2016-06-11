@@ -128,7 +128,7 @@ def produtos(request):
         form = CadastroProd()
 
     return render(request, 'produtos.html', {'form': form, 'avisos': avisos,
-                                             'produtos': produtos})
+                                             'produtos': produtos.order_by("idProduto__nome")})
 
 
 @login_required
@@ -151,7 +151,7 @@ def pesquisa(request):
 
     if request.method == 'GET' and 'buscaSimples' in request.GET:
         pesAux = Produto.objects.filter(nome__icontains=request.GET.get('buscaNome'))
-        pesquisas = Possui.objects.filter(idProduto__in=pesAux)
+        pesquisas = Possui.objects.filter(idProduto__in=pesAux).order_by("idProduto__nome")
 
     if request.method == 'POST' and 'favoritar' in request.POST:
         favoritos = request.POST.getlist('favoritos')
