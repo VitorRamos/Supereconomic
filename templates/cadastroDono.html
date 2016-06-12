@@ -3,6 +3,32 @@
 {% block content %}
     <div class="row">
         <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-lg-offset-2 col-xs-offset-2 col-sm-offset-2 col-md-offset-2">
+            <h2 class="tittlePage">Cadastrar Dono</h2>
+            <section class="conteudo">
+                <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1">
+                    {% for aviso in avisos_sucesso %}
+                        <div class="alert alert-success" role="alert">
+                            <p>{{aviso}}</p>
+                        </div>
+                    {%  endfor %}
+                    {% for aviso in avisos_erro %}
+                        <div class="alert alert-danger" role="alert">
+                            <p>{{aviso}}</p>
+                        </div>
+                    {%  endfor %}
+
+                    <form class="margin-top5px" role="form" action="" method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="modal-footer margin-top25px">
+                            <button class="btn btn-success pull-right" type="submit" name="cadastrar">Cadastrar</button>
+                            <button class="btn btn-danger pull-right margin-right3percent" type="submit" name="cancelar">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </div>
             <h3 class="tittlePage">Cadastrar Dono</h3>
             <form class="text-center margin-top5px" role="form" action="" method="post">
                 {% csrf_token %}

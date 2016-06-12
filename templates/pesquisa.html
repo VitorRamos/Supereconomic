@@ -51,11 +51,12 @@
                 </div>
             {%  endfor %}
 
-            {% for aviso in aviso_error %}
-                <div class="alert alert-danger" role="alert">
-                    <p>{{aviso}}</p>
-                </div>
-            {%  endfor %}
+                {% for aviso in aviso_error %}
+                    <div class="alert alert-danger" role="alert">
+                        <p>{{aviso}}</p>
+                    </div>
+                {%  endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}

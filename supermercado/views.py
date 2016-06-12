@@ -111,6 +111,8 @@ def cadastroDono(request):
                 return HttpResponseRedirect('/cadastroDono')
             else:
                 avisos_erro.append('Usuario ja existe')
+        else:
+            avisos_erro.append('Erro Formulario')
     else:
         form = CadastroDono()
     return render(request, 'cadastroDono.html',
@@ -132,9 +134,11 @@ def produtos(request):
 
     if request.method == 'POST' and 'cadastrarProd' in request.POST:
         form = CadastroProd(request.POST)
+
         if form.is_valid():
             produto = Produto(nome=form.cleaned_data.get('nome'),
-                              marca=form.cleaned_data.get('marca'))
+                              marca=form.cleaned_data.get('marca'),
+                              tipo=request.POST.getlist('tipo'))
             produto.save()
             possui = Possui(idProduto=produto,
                             idSupermercado=dono.idSupermercado,

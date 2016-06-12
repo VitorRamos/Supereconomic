@@ -3,13 +3,9 @@
 {% block content %}
     <div class="row">
         <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-lg-offset-2 col-xs-offset-2 col-sm-offset-2 col-md-offset-2">
-            <h3 class="tittlePage">Home</h3>
+            <h2 class="tittlePage">Home</h2>
             <div class="conteudo">
-                {% if user.is_authenticated %}
                     <p>Bem vindo, {{ user.username }}!!</p>
-                {% else %}
-                    <p>Ainda não fez login?</p>
-                {% endif %}
             </div>
         </div>
     </div>

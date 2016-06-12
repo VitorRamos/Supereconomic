@@ -3,12 +3,23 @@
 {% block content %}
     <div class="row">
         <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-lg-offset-2 col-xs-offset-2 col-sm-offset-2 col-md-offset-2">
-            <h1>Cadastrar Produto</h1>
-            <form role="form" action="" method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" name="cadastrarProd" class="btn btn-success">Cadastrar</button>
-            </form>
+            <h2 class="tittlePage">Cadastrar Produto</h2>
+
+            <section class="conteudo">
+                <form class="margin-top5px" role="form" action="" method="POST">
+                    <div class="form-group col-lg-6 col-lg-offset-3">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-lg-offset-3">
+                            <div class="modal-footer">
+                                <button type="submit" name="cadastrarProd" class="btn btn-success pull-right">Cadastrar</button>
+                                <button type="submit" name="Cancelar" class="btn btn-danger margin-right3percent pull-right">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
 
             <form method="POST">
                 {% csrf_token %}
