@@ -1,17 +1,26 @@
 {%  extends "header.html" %}
 
 {% block content %}
-    <h1>Cadastro</h1>
-    <form role="form" action="" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" name="cadastrar">Cadastrar</button>
-        <button type="submit" name="voltar">Voltar</button>
-    </form>
+    <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10 col-xs-offset-1 col-lg-offset-4 col-md-offset-4 col-sm-offset-4">
+            <h2 class="text-center">Seja Bem Vindo ao Cadastro!</h2>
 
-    {% for aviso in avisos %}
-        <div class="alert alert-warning" role="alert">
-            <p>{{aviso}}</p>
+            {% for aviso in avisos %}
+                <div class="alert alert-warning" role="alert">
+                    <p>{{aviso}}</p>
+                </div>
+            {%  endfor %}
+
+            <form class="margin-top55px" role="form" action="" method="post">
+                <div class="text-center">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success pull-right" type="submit" name="cadastrar">cadastrar</button>
+                    <button class="btn btn-danger pull-right margin-right3percent" type="submit" name="cancelar">Cancelar</button>
+                </div>
+            </form>
         </div>
-    {%  endfor %}
+    </div>
 {% endblock %}

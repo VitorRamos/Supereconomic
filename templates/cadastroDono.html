@@ -1,16 +1,65 @@
 {%  extends "header.html" %}
 
 {% block content %}
-    <h3 class="tittlePage">Cadastrar Dono</h3>
-    <form role="form" action="" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" name="cadastrar">Cadastrar</button>
-    </form>
+    <div class="row">
+        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-lg-offset-2 col-xs-offset-2 col-sm-offset-2 col-md-offset-2">
+            <h2 class="tittlePage">Cadastro</h2>
+            <section class="conteudo">
+                <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1">
+                    {% for aviso in avisos_sucesso %}
+                        <div class="alert alert-success" role="alert">
+                            <p>{{aviso}}</p>
+                        </div>
+                    {%  endfor %}
+                    {% for aviso in avisos_erro %}
+                        <div class="alert alert-danger" role="alert">
+                            <p>{{aviso}}</p>
+                        </div>
+                    {%  endfor %}
 
-    {% for aviso in avisos %}
-        <div class="alert alert-danger" role="alert">
-            <p>{{aviso}}</p>
+                    <form class="margin-top5px" role="form" action="" method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="modal-footer margin-top25px">
+                            <button class="btn btn-success pull-right" type="submit" name="cadastrar">Cadastrar</button>
+                            <button class="btn btn-danger pull-right margin-right3percent" type="submit" name="cancelar">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption>Donos Cadastrados</caption>
+                            <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>CNPJ</th>
+                                <th>Supermercado</th>
+                                <th>Localizacao Supermercado</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for dono in donos %}
+                                <tr>
+                                    <td>{{dono.idEmpresario.username}}</td>
+                                    <td>{{dono.CNPJ}}</td>
+                                    <td>{{dono.idSupermercado.nome}}</td>
+                                    <td>{{dono.idSupermercado.localizacao}}</td>
+                                    <td><button type="submit" value="{{ dono.id }}"
+                                                class="btn btn-danger glyphicon glyphicon-remove" name="deletar"></button></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </section>
         </div>
-    {%  endfor %}
+    </div>
+
+
 {% endblock %}

@@ -25,4 +25,50 @@ html,body {
 .conteudo{
     margin-top: 5%;
     margin-left: 2%;
+    margin-right: 2%;
+}
+.margin-top55px{
+    margin-top: 55px;
+}
+.margin-right3percent{
+    margin-right: 3%;
+}
+.margin-right2percent{
+    margin-right: 2%;
+}
+.margin-top25px{
+    margin-top: 25px;
+}
+.form-control-2{
+    width: 49%!important;
+}
+.control-label{
+    padding-top: 7px;
+    margin-bottom: 0;
+    text-align: right;
+}
+.margin-bottom10px{
+    margin-bottom: 10px!important;
+}
+.modal-footer {
+    padding: 15px!important;
+    text-align: right!important;
+    border-top: 1px solid #b9b4b4;
+}
+.padding-0px{
+    /*padding: 6px 12px;*/
+    padding: 1px 5px!important;
+    color: white;
+}
+.caption{
+    padding-top: 8px;
+    padding-bottom: 8px;
+    color: #777;
+    text-align: left
+}
+.margin-bottom15px{
+    margin-bottom: 15px!important;
+}
+.colorStar{
+    color: #CCC926;
 }

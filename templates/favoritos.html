@@ -1,5 +1,46 @@
 {%  extends "header.html" %}
 
 {% block content %}
-    <p>Favoritos</p>
+    <div class="row">
+        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-lg-offset-2 col-xs-offset-2 col-sm-offset-2 col-md-offset-2">
+            <h2 class="tittlePage">Favoritos</h2>
+            <section class="conteudo">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Tipo</th>
+                                <th>Marca</th>
+                                <th>Supermercado</th>
+                                <th>Preco</th>
+                                <th>Remover</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for produto in prodFavorito %}
+                                <tr>
+                                    <td>{{produto.idProduto.nome}}</td>
+                                    <td>{% if produto.idProduto.tipo == "[u'eletronico']" %} Eletronico {% endif %}
+                                        {% if produto.idProduto.tipo == "[u'alimento']"%} Alimento {% endif %}
+                                        {% if produto.idProduto.tipo == "[u'limpeza']"%} Limpeza {% endif %}
+                                        {% if produto.idProduto.tipo == "[u'brinquedo']"%} Brinquedo  {% endif %}
+                                    </td>
+                                    <td>{{produto.idProduto.marca}}</td>
+                                    <td>{{produto.idSupermercado.nome}}</td>
+                                    <td>{{produto.preco}}</td>
+                                    <td><button type="submit" value="{{ produto.idProduto.idProduto }}"
+                                                class="btn btn-danger glyphicon glyphicon-remove" name="deletar"></button></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
 {% endblock %}

@@ -1,205 +1,250 @@
 from django.shortcuts import render
-from django.contrib import auth
-from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from models import *
-from forms import *
+from django.contrib import auth
+from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import user_passes_test
 
+from forms import LoginForm, CadastroForm, CadastroDono, CadastroProd, PesquisaProd
+from models import Dono, Supermercado, Favorito, Possui, Produto
+from supermercado.models import Carrinho
+
+# from django.db.models import Sum
 
 def index(request):
-    if request.method == "POST" and "logarGlobal" in request.POST:  # global login
-        return login(request)
-
-    if request.method == "POST" and "cadastrarGlobal" in request.POST:
-        return HttpResponseRedirect('/cadastro')
-
-    if request.method == "POST" and "sairGlobal" in request.POST:
-        auth.logout(request)
-        return HttpResponseRedirect('/')
-
-    return render(request, "home.html")
-
-def login(request):
     if request.user.is_authenticated():
-        return HttpResponseRedirect('/')
+        return render(request, 'home.html')
+    else:
+        return render(request, 'index.html')
 
-    if request.method == "POST" and "cadastrarGlobal" in request.POST:
-        return HttpResponseRedirect("/cadastro")
 
-    avisos= []
-    if request.method == "POST" and "voltar" in request.POST:
-        return HttpResponseRedirect('/')
+@user_passes_test(lambda user: user.is_authenticated() == False)
+def login(request):
+    avisos = []
 
-    elif request.method == "POST" and ("logar" in request.POST
-                                    or "cadastrar" in request.POST
-                                    or "logarGlobal" in request.POST):
-        form = LoginForm(request.POST)
-
+    if request.method == 'GET' and ('logar' in request.GET or 'logarGlobal' in request.GET):
+        form = LoginForm(request.GET)
         if form.is_valid():
-            user = auth.authenticate(username=form.cleaned_data.get("nome"),
-                                     password=form.cleaned_data.get("senha"))
+            user = auth.authenticate(username=form.cleaned_data.get('nome'),
+                                     password=form.cleaned_data.get('senha'))
             if user is not None:
                 if user.is_active:
                     auth.login(request, user)
-                    return HttpResponseRedirect("/")
+                    return HttpResponseRedirect('/')
                 else:
-                    avisos.append("Essa conta foi desativada.")
+                    avisos.append('Essa conta foi desativada.')
             else:
-                request.path= "/login/" #TODO bug consertar
-                avisos.append("Senha ou usuario incorretos.")
-
+                avisos.append('Senha ou usuario incorretos.')
     else:
         form = LoginForm()
 
-    return render(request, "login.html", {"form": form, "avisos": avisos})
+    return render(request, 'login.html', {'form': form, 'avisos': avisos})
 
 
+@login_required
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect('/')
+
+
+@user_passes_test(lambda user: user.is_authenticated() == False)
 def cadastro(request):
-    if request.user.is_authenticated():
-        return HttpResponseRedirect('/')
-
-    if request.method == "POST" and "logarGlobal" in request.POST:  # global login
-        return login(request)
-
     avisos = []
-    if request.method == "POST" and "voltar" in request.POST:
-        return HttpResponseRedirect('/')
 
-    elif request.method == "POST" and "cadastrar" in request.POST:
+    if request.method == 'POST' and 'cadastrar' in request.POST:
         form = CadastroForm(request.POST)
 
         if form.is_valid():
-            if auth.models.User.objects.filter(username=form.cleaned_data.get("nome")).count() == 0:
-                grupo = auth.models.Group.objects.get(name="Clientes")
-                user = auth.models.User.objects.create_user(form.cleaned_data.get("nome"),
-                                                            "emal", form.cleaned_data.get("senha"))
+            if not auth.models.User.objects.filter(username=form.cleaned_data.get('nome')).exists():
+                grupo = auth.models.Group.objects.get_or_create(name='Clientes')[0]
+                user = auth.models.User.objects.create_user(form.cleaned_data.get('nome'),'emal',
+                                                            form.cleaned_data.get('senha'))
                 user.groups.add(grupo)
                 user.save()
-                avisos.append("Cadastrado Com Sucesso")
-                return login(request)
-
+                user = auth.authenticate(username=form.cleaned_data.get('nome'),
+                                         password=form.cleaned_data.get('senha'))
+                auth.login(request, user)
+                return HttpResponseRedirect('/')
             else:
-                avisos.append("Usuario ja existe")
+                avisos.append('Usuario ja existe')
                 form = CadastroForm()
     else:
         form = CadastroForm()
 
-    return render(request, "cadastro.html", {"form": form, "clientes": auth.models.User.objects.all(),
-                                             "avisos": avisos})
+    return render(request, "cadastro.html", {'form': form, 'avisos': avisos})
 
 
-def favoritos(request):
-    if not request.user.groups.filter(name="Clientes").exists():
-        return HttpResponseRedirect("/")
-
-    if request.method == "POST" and "sairGlobal" in request.POST:
-        auth.logout(request)
-        return HttpResponseRedirect("/")
-
-    return render(request, "favoritos.html")
-
-def produtos(request):
-    if not request.user.groups.filter(name="Donos").exists():
-        return HttpResponseRedirect("/")
-
-    if request.method == "POST" and "sairGlobal" in request.POST:
-        auth.logout(request)
-        return HttpResponseRedirect("/")
-
-    avisos= []
-    produtos= []
-    if request.method == "POST" and "cadastrarProd" in request.POST:
-        form = CadastroProd(request.POST)
-
-        if form.is_valid():
-            dono= Dono.objects.filter(idEmpresario=request.user.id)[0]
-
-            possui= Possui()
-            produto = Produto()
-            produto.nome = form.cleaned_data.get("nome")
-            produto.marca = form.cleaned_data.get("marca")
-            produto.save()
-
-            possui.idProduto = produto
-            possui.idSupermercado = dono.idSupermercado
-            possui.preco = form.cleaned_data.get("preco")
-            possui.quantidade = form.cleaned_data.get("quantidade")
-            possui.save()
-            form = CadastroProd()
-        else:
-            avisos.append("Produto Invalido")
-    else:
-        form = CadastroProd()
-
-    dono = Dono.objects.filter(idEmpresario=request.user.id)[0]
-    produtos = Possui.objects.filter(idSupermercado=dono.idSupermercado)
-    return render(request, "produtos.html", {"form":form, "avisos":avisos,
-                                             "produtos": produtos})
-
-def sobre(request):
-    if request.method == "POST" and "logarGlobal" in request.POST:  # global login
-        return login(request)
-
-    if request.method == "POST" and "sairGlobal" in request.POST:
-        auth.logout(request)
-        return HttpResponseRedirect("/")
-
-    if request.method == "POST" and "cadastrarGlobal" in request.POST:
-        return HttpResponseRedirect("/cadastro")
-
-    return render(request, "sobre.html")
-
+@login_required
+@permission_required('is_superuser')
 def cadastroDono(request):
-    if not request.user.is_superuser:
-        return HttpResponseRedirect("/")
+    avisos_sucesso = []
+    avisos_erro = []
 
-    if request.method == "POST" and "sairGlobal" in request.POST:
-        auth.logout(request)
-        return HttpResponseRedirect("/")
+    if request.method == 'POST' and 'deletar' in request.POST:
+        donoDeletar = Dono.objects.filter(id=request.POST.get('deletar'))[0]
+        auth.models.User.objects.filter(id=donoDeletar.idEmpresario.id).delete()
+        if Dono.objects.filter(idSupermercado=donoDeletar.idSupermercado.idSupermercado).count() == 0:
+            Produto.objects.filter(idProduto__in=
+                                   Possui.objects.filter(idSupermercado=donoDeletar.idSupermercado).values_list('idProduto')).delete()
+            Supermercado.objects.filter(idSupermercado=donoDeletar.idSupermercado.idSupermercado).delete()
+        donoDeletar.delete()
 
-    avisos= []
-    if request.method == "POST" and "cadastrar" in request.POST:
+    if request.method == 'POST' and 'cadastrar' in request.POST:
         form = CadastroDono(request.POST)
         if form.is_valid():
-            if auth.models.User.objects.filter(username=form.cleaned_data.get("nome")).exists():
-                avisos.append("Usuario ja existe")
-            else:
-                #usuario = Usuario()
-                supermercado = Supermercado()
-                grupo = auth.models.Group.objects.get(name="Donos")
-                user = auth.models.User.objects.create_user(form.cleaned_data.get("nome"),
-                                                            "emal",
-                                                            form.cleaned_data.get("senha"))
+            if not auth.models.User.objects.filter(username=form.cleaned_data.get('nome')).exists():
+                grupo = auth.models.Group.objects.get_or_create(name='Donos')[0]
+                user = auth.models.User.objects.create_user(form.cleaned_data.get('nome'),'emal',
+                                                            form.cleaned_data.get('senha'))
                 user.groups.add(grupo)
                 user.save()
-                #empresaio= Empresario()
-                dono= Dono()
-                #usuario.nome = form.cleaned_data.get("nome")
-                #usuario.senha = form.cleaned_data.get("senha")
-                supermercado.nome = form.cleaned_data.get("nomeSupermercado")
-                supermercado.localizacao = form.cleaned_data.get("localizacao")
-                #usuario.save()
-                supermercado.save()
-                #empresaio.idEmpresario = usuario
-                #empresaio.CNPJ = form.cleaned_data.get("CNPJ")
-                #empresaio.save()
-                dono.idEmpresario = user
-                dono.idSupermercado = supermercado
-                dono.CNPJ= form.cleaned_data.get("CNPJ")
+                supermercado= Supermercado.objects.get_or_create(
+                    nome=form.cleaned_data.get('nomeSupermercado'),
+                    localizacao=form.cleaned_data.get('localizacao'))[0]
+
+                dono = Dono(idEmpresario=user,
+                            idSupermercado=supermercado,
+                            CNPJ=form.cleaned_data.get('CNPJ'))
                 dono.save()
 
                 form = CadastroDono()
-                avisos.append("Cadastrado Com Sucesso") #TODO mudar cor do aviso no html
+                avisos_sucesso.append('Cadastrado Com Sucesso')
+                return HttpResponseRedirect('/cadastroDono')
+            else:
+                avisos_erro.append('Usuario ja existe')
         else:
-            avisos.append("Erro Formulario")
+            avisos_erro.append('Erro Formulario')
     else:
-        form= CadastroDono()
-    return render(request, "cadastroDono.html", {"form":form, "avisos":avisos})
+        form = CadastroDono()
+    return render(request, 'cadastroDono.html',
+                  {'form': form, 'avisos_erro': avisos_erro, 'avisos_sucesso': avisos_sucesso, 'donos':Dono.objects.all()})
 
+
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Donos').exists() == True)
+def produtos(request):
+    avisos = []
+    dono = Dono.objects.filter(idEmpresario=request.user.id)[0]
+    produtos = Possui.objects.filter(idSupermercado=dono.idSupermercado)
+
+    if request.method == 'POST' and 'deletar' in request.POST:
+        if Produto.objects.filter(idProduto__in=request.POST.getlist('produtosDeletar')).exists():
+            Produto.objects.filter(idProduto__in=request.POST.getlist('produtosDeletar')).delete()
+        else:
+            avisos.append('Nenhum Produto Selecionado')
+
+    if request.method == 'POST' and 'cadastrarProd' in request.POST:
+        form = CadastroProd(request.POST)
+
+        if form.is_valid():
+            produto = Produto(nome=form.cleaned_data.get('nome'),
+                              marca=form.cleaned_data.get('marca'),
+                              tipo=request.POST.getlist('tipo'))
+            produto.save()
+            possui = Possui(idProduto=produto,
+                            idSupermercado=dono.idSupermercado,
+                            preco=form.cleaned_data.get('preco'),
+                            quantidade=form.cleaned_data.get('quantidade'))
+            possui.save()
+            form = CadastroProd()
+            return HttpResponseRedirect('/produtos')
+    else:
+        form = CadastroProd()
+
+    return render(request, 'produtos.html', {'form': form, 'avisos': avisos,
+                                             'produtos': produtos.order_by("idProduto__nome")})
+
+
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Clientes').exists() == True)
+def favoritos(request):
+    if request.method == 'POST' and 'deletar' in request.POST:
+        Favorito.objects.filter(idProduto=request.POST.get('deletar')).delete()
+
+    dadosProd = Possui.objects.filter(idProduto__in=Favorito.objects.filter(
+        idCliente=request.user).values_list('idProduto'))
+    return render(request, 'favoritos.html', {'prodFavorito': dadosProd})
+
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Clientes').exists() == True)
+def carrinho(request):
+    if request.method == 'POST' and 'deletar' in request.POST:
+        Carrinho.objects.filter(idProduto=request.POST.get('deletar')).delete()
+
+    dadosProd = Possui.objects.filter(idProduto__in=Carrinho.objects.filter(
+        idCliente=request.user).values_list('idProduto'))
+    TotalCarrinho = 0
+    if request.method == 'POST' and 'calcular' in request.POST:
+        qnt = map(float,request.POST.getlist('quantidade'))
+        prods = Possui.objects.filter(idProduto__in=Carrinho.objects.all().values_list('idProduto'))
+        for x in range(0, Carrinho.objects.all().count()):
+            TotalCarrinho= TotalCarrinho+prods[x].preco*qnt[x]
+            # TotalCarrinho= Possui.objects.filter(
+            # idProduto__in=Carrinho.objects.all().values_list('idProduto')).aggregate(total=Sum('preco')).get('total')
+    return render(request, 'carrinho.html', {'prodCarrinho': dadosProd, 'TotalCarrinho':TotalCarrinho})
+
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Clientes').exists() == True)
 def pesquisa(request):
-    pesquisa = []
-    if request.method == "POST" and "buscaSimples" in request.POST:
-        pesAux = Produto.objects.filter(nome__icontains = request.POST.get("buscaNome"))
-        pesquisa = Possui.objects.filter(idProduto__in = pesAux)
+    pesquisas = []
+    aviso_sucess = []
+    aviso_error = []
 
-    return render(request, "pesquisa.html", {"pesquisa":pesquisa})
+    if request.method == 'GET' and 'buscaSimples' in request.GET:
+        pesquisas = Possui.objects.filter(idProduto__in=Produto.objects.filter(
+            nome__icontains=request.GET.get('buscaNome'))).order_by("idProduto__nome")
+
+    if request.method == 'GET' and 'buscaAvancada' in request.GET:
+        form = PesquisaProd(request.GET)
+        if form.is_valid():
+            prods= Produto.objects.filter( nome__icontains = form.cleaned_data.get('nome'),
+                                    marca__icontains = form.cleaned_data.get('marca'),
+                                    tipo__icontains = form.cleaned_data.get('tipo') ).values_list('idProduto')
+
+            if form.cleaned_data.get('precoMin') is not None and form.cleaned_data.get('precoMax') is not None:
+                result = Possui.objects.filter(idProduto__in=prods,
+                                               preco__gte=form.cleaned_data.get('precoMin'),
+                                               preco__lte=form.cleaned_data.get('precoMax'))
+            else:
+                result = Possui.objects.filter(idProduto__in=prods)
+            pesquisas= result
+            form= PesquisaProd()
+        else:
+            aviso_error.append("ERRO FORM")
+    else:
+        form = PesquisaProd()
+
+    if request.method == 'POST' and 'favoritar' in request.POST:
+        favoritos = request.POST.getlist('prodSel')
+        #TODO aviso nada selecionado
+        for id in favoritos:
+            produtoFavorito = Produto.objects.filter(idProduto=id)[0]
+            if not Favorito.objects.filter(idProduto=produtoFavorito, idCliente=request.user).exists():
+                favorito = Favorito(idProduto=produtoFavorito, idCliente=request.user)
+                favorito.save()
+                aviso_sucess.append(produtoFavorito.nome + ' cadastrado com sucesso ')
+                #TODO reenvio de formulario
+                # return HttpResponseRedirect('/pesquisa')
+            else:
+                aviso_error.append('Esse produto ja esta nos seus favoritos')
+
+    if request.method == 'POST' and 'carrinho' in request.POST:
+        carrinhoProd = request.POST.getlist('prodSel')
+        # TODO aviso nada selecionado
+        for id in carrinhoProd:
+            produtoCarrinho = Produto.objects.filter(idProduto=id)[0]
+            if not Carrinho.objects.filter(idProduto=produtoCarrinho, idCliente=request.user).exists():
+                carrinho_ = Carrinho(idProduto=produtoCarrinho, idCliente=request.user)
+                carrinho_.save()
+                aviso_sucess.append(produtoCarrinho.nome + ' colocado no carrinho')
+                # TODO reenvio de formulario
+                # return HttpResponseRedirect('/pesquisa')
+            else:
+                aviso_error.append('ja esta no seu carrinho')
+
+    return render(request, 'pesquisa.html',
+                  {'form':form,'pesquisa': pesquisas, 'aviso_sucess': aviso_sucess, 'aviso_error': aviso_error,
+                   'favoritos': Possui.objects.filter(idProduto__in=Favorito.objects.filter(idCliente=request.user.id).values('idProduto'))})
+
+
+def sobre(request):
+    return render(request, 'sobre.html')

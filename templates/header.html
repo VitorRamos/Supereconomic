@@ -7,9 +7,7 @@
     {% load staticfiles %}
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type = "text/css"/>
     <link rel="stylesheet" href="{% static 'css/supermercado.css' %}" type = "text/css"/>
-    <link rel="stylesheet" href="{% static 'jumbotron.css' %}" type="text/css">
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link rel="stylesheet" href="{% static 'css/ie10-viewport-bug-workaround.css' %}" type="text/css">
+    <script src="{% static 'js/jquery.js'%}"></script>
     <script src="{% static 'js/bootstrap.js'%}"></script>
     <script src="{% static 'js/bootstrap.min.js'%}"></script>
     <meta name="viewport" content = "width=device-width, initial-scale=1.0">
@@ -30,7 +28,7 @@
         </div>
 
         <div id="navbar" class="navbar-collapse collapse">
-            <form class="navbar-form navbar-right" method="post">
+            <form class="navbar-form navbar-right" method="get">
                 {% if not user.is_authenticated %}
                     {% csrf_token %}
                     <div class="form-group">
@@ -38,56 +36,56 @@
                     </div>
                     <div class="form-group">
                         <input type="password" placeholder="Senha" name="senha" class="form-control">
+
+                        <button type="submit" class="btn btn-success" formaction="/login/" name="logarGlobal">Entrar</button>
+                        <button type="submit" class="btn btn-primary" formaction="/cadastro/" name="cadastrarGlobal">Cadastrar-se</button>
                     </div>
-                    <button type="submit" class="btn btn-success" name="logarGlobal">Entrar</button>
-                    <button type="submit" class="btn btn-primary" name="cadastrarGlobal">Cadastrar-se</button>
                 {% endif %}
 
                 {% if user.is_authenticated %}
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger" name="sairGlobal">Sair</button>
+                    <div class="form-group">
+                        {% if user.groups.all.0.name == 'Clientes' %}
+                            <button name="favoritar" class="btn btn-primary"  title="Favoritos" formaction="{% url 'favoritos' %}"><i class="glyphicon glyphicon-star"></i></button>
+                            <button name="carrinho" class="btn btn-primary padding-0px"  formaction="{% url 'carrinho' %}"><img src="{% static 'img/shopping-cartWhite.png' %}" width="30px"></button>
+                        {% endif %}
+                        <button type="submit" class="btn btn-danger" formaction="{% url 'logout' %}" name="sairGlobal">Sair</button>
+                    </div>
                 {% endif %}
             </form>
-        </div><!--/.navbar-collapse -->
-
-{#        <div class="navbar-right">#}
-{#            <div class="form-group">#}
-{##}
-{#            </div>#}
-{#        </div>#}
+        </div>
     </div>
 </nav>
 ​
 <div class="row">
-    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-sm-3 col-md-2 sidebar menu">
-        <ul class="nav nav-sidebar nav-pills nav-stacked navmenuWord">
-            <li class="{% if '/' == request.path %}active{% endif %}"><a href='/'>Home</a></li>
-            {% if not user.is_authenticated %}
-                <li class="{% if '/login/' == request.path %}active{% endif %}"><a href='/login/'>login</a></li>
-                <li class="{% if '/cadastro/' == request.path %}active{% endif %}"><a href='/cadastro'>cadastrar-se</a></li>
-            {% endif %}
-            {% if user.groups.all.0.name == 'Clientes' %}
-                <li class="{% if '/favoritos/' == request.path %}active{% endif %}"><a href='/favoritos'>favoritos</a> </li>
-            {% endif %}
-            {% if user.groups.all.0.name == 'Donos' %}
-                <li class="{% if '/produtos/' == request.path %}active{% endif %}"><a href='/produtos'>produtos</a> </li>
-            {% endif %}
-            {% if user.groups.all.0.name == 'Clientes' %}
-                <li class="{% if '/pesquisa/' == request.path %}active{% endif %}"><a href='/pesquisa'>Pesquisa</a> </li>
-            {% endif %}
-            {% if user.is_superuser %}
-                <li class="{% if '/cadastroDono/' == request.path %}active{% endif %}"><a href='/cadastroDono'>cadastroDono</a> </li>
-            {% endif %}
-            <li class="{% if '/sobre/' == request.path %}active{% endif %}"><a href='/sobre'>sobre</a> </li>
-        </ul>
-    </div>
-    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-lg-offset-2 col-xs-offset-2 col-sm-offset-2 col-md-offset-2">
-        ​
-        <div class='container-fluid'>
-            {% block content %}
-            {% endblock %}
+    {% if user.is_authenticated %}
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-sm-3 col-md-2 sidebar menu">
+            <ul class="nav nav-sidebar nav-pills nav-stacked navmenuWord">
+                <li class="{% if '/' == request.path %}active{% endif %}"><a href='/'>Home</a></li>
+                {% if user.groups.all.0.name == 'Clientes' %}
+                    <li class="{% if '/favoritos/' == request.path %}active{% endif %}"><a href='/favoritos'>Favoritos</a> </li>
+                {% endif %}
+                {% if user.groups.all.0.name == 'Clientes' %}
+                    <li class="{% if '/carrinho/' == request.path %}active{% endif %}"><a href='/carrinho'>Carrinho</a> </li>
+                {% endif %}
+                {% if user.groups.all.0.name == 'Donos' %}
+                    <li class="{% if '/produtos/' == request.path %}active{% endif %}"><a href='/produtos'>Produtos</a> </li>
+                {% endif %}
+                {% if user.groups.all.0.name == 'Clientes' %}
+                    <li class="{% if '/pesquisa/' == request.path %}active{% endif %}"><a href='/pesquisa'>Pesquisar Produtos</a> </li>
+                {% endif %}
+                {% if user.is_superuser %}
+                    <li class="{% if '/cadastroDono/' == request.path %}active{% endif %}"><a href='/cadastroDono'>Cadastrar Dono</a> </li>
+                {% endif %}
+                {#                <li class="{% if '/sobre/' == request.path %}active{% endif %}"><a href='/sobre'>Sobre</a> </li>#}
+            </ul>
         </div>
+    {% endif %}
+    <div class='container-fluid'>
+        {% block content %}
+        {% endblock %}
     </div>
+    {#    </div>#}
 </div>
 
 <footer>
