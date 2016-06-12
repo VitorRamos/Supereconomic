@@ -175,8 +175,9 @@ def carrinho(request):
     TotalCarrinho = 0
     if request.method == 'POST' and 'calcular' in request.POST:
         qnt = map(float,request.POST.getlist('quantidade'))
-        prods = Possui.objects.filter(idProduto__in=Carrinho.objects.all().values_list('idProduto'))
-        for x in range(0, Carrinho.objects.all().count()):
+        prods = Possui.objects.filter(
+            idProduto__in=Carrinho.objects.filter(idCliente=request.user).values_list('idProduto'))
+        for x in range(0, Carrinho.objects.filter(idCliente=request.user).count()):
             TotalCarrinho= TotalCarrinho+prods[x].preco*qnt[x]
             # TotalCarrinho= Possui.objects.filter(
             # idProduto__in=Carrinho.objects.all().values_list('idProduto')).aggregate(total=Sum('preco')).get('total')

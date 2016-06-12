@@ -4,6 +4,11 @@
     <div class="row">
         <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-lg-offset-2 col-xs-offset-2 col-sm-offset-2 col-md-offset-2">
             <h2 class="tittlePage">Bem vindo, {{ user.username }}!!</h2>
+
+            <div class="conteudo text-center">
+                {% load staticfiles %}
+                <img src="{% static 'img/cel.png' %}" width="400px">
+            </div>
         </div>
     </div>
 {% endblock %}
