@@ -17,8 +17,8 @@ class LoginForm(forms.Form):
     senha = forms.CharField(max_length=45, label="",
                             widget=forms.TextInput(attrs={"placeholder":"Senha", "class": "form-control", "type":"password"}))
 
-LOCATIONS = (
-    ('selecione', 'Selecione...'),
+TIPOS = (
+    ('', 'Selecione...'),
     ('alimento', 'Alimento'),
     ('limpeza', 'Limpeza'),
     ('eletronico', 'Eletronico'),
@@ -39,10 +39,9 @@ class CadastroProd(forms.Form):
                                    min_value=0,
                                    widget=forms.NumberInput(attrs={"placeholder": "Quantidade", "class": "form-control form-control-2 col-lg-6 col-xs-6 col-sm-6 col-ms-6 pull-right margin-bottom10px"}))
     tipo = forms.ChoiceField(label="",
-                             choices=LOCATIONS,
+                             choices=TIPOS,
                              required=True,
                              widget=forms.Select(attrs={"class": "form-control"}))
-
 
 
 class CadastroDono(forms.Form):
@@ -56,3 +55,20 @@ class CadastroDono(forms.Form):
                                        widget=forms.TextInput(attrs={"placeholder": "Supermercado", "class": "form-control"}))
     localizacao = forms.CharField(max_length=255, label="",
                                   widget=forms.TextInput(attrs={"placeholder": "Localizacao", "class": "form-control"}))
+
+
+class PesquisaProd(forms.Form):
+    nome = forms.CharField(max_length=45, label="", required=False,
+                           widget=forms.TextInput(attrs={"placeholder": "Nome", "class": "form-control"}))
+    marca = forms.CharField(max_length=45, label="", required=False,
+                            widget=forms.TextInput(attrs={"placeholder": "Marca", "class": "form-control"}))
+    precoMin = forms.FloatField(label="",
+                            min_value=0, required=False,
+                            widget=forms.NumberInput(attrs={"placeholder": "Min", "step": "0.01", "class": "form-control form-control-2 col-lg-6 col-xs-6 col-sm-6 col-ms-6"}))
+    precoMax = forms.FloatField(label="",
+                                min_value=0, required=False,
+                                widget=forms.NumberInput(attrs={"placeholder": "Max", "step": "0.01",
+                                                                "class": "form-control form-control-2 col-lg-6 col-xs-6 col-sm-6 col-ms-6 pull-right margin-bottom15px"}))
+    tipo = forms.ChoiceField(label="",
+                             choices=TIPOS, required=False,
+                             widget=forms.Select(attrs={"class": "form-control"}))

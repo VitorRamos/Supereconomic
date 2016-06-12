@@ -4,7 +4,7 @@ from django.contrib import auth
 from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.auth.decorators import user_passes_test
 
-from forms import LoginForm, CadastroForm, CadastroDono, CadastroProd
+from forms import LoginForm, CadastroForm, CadastroDono, CadastroProd, PesquisaProd
 from models import Dono, Supermercado, Favorito, Possui, Produto
 from supermercado.models import Carrinho
 
@@ -193,6 +193,26 @@ def pesquisa(request):
         pesquisas = Possui.objects.filter(idProduto__in=Produto.objects.filter(
             nome__icontains=request.GET.get('buscaNome'))).order_by("idProduto__nome")
 
+    if request.method == 'GET' and 'buscaAvancada' in request.GET:
+        form = PesquisaProd(request.GET)
+        if form.is_valid():
+            prods= Produto.objects.filter( nome__icontains = form.cleaned_data.get('nome'),
+                                    marca__icontains = form.cleaned_data.get('marca'),
+                                    tipo__icontains = form.cleaned_data.get('tipo') ).values_list('idProduto')
+
+            if form.cleaned_data.get('precoMin') is not None and form.cleaned_data.get('precoMax') is not None:
+                result = Possui.objects.filter(idProduto__in=prods,
+                                               preco__gte=form.cleaned_data.get('precoMin'),
+                                               preco__lte=form.cleaned_data.get('precoMax'))
+            else:
+                result = Possui.objects.filter(idProduto__in=prods)
+            pesquisas= result
+            form= PesquisaProd()
+        else:
+            aviso_error.append("ERRO FORM")
+    else:
+        form = PesquisaProd()
+
     if request.method == 'POST' and 'favoritar' in request.POST:
         favoritos = request.POST.getlist('prodSel')
         #TODO aviso nada selecionado
@@ -222,7 +242,7 @@ def pesquisa(request):
                 aviso_error.append('ja esta no seu carrinho')
 
     return render(request, 'pesquisa.html',
-                  {'pesquisa': pesquisas, 'aviso_sucess': aviso_sucess, 'aviso_error': aviso_error,
+                  {'form':form,'pesquisa': pesquisas, 'aviso_sucess': aviso_sucess, 'aviso_error': aviso_error,
                    'favoritos': Possui.objects.filter(idProduto__in=Favorito.objects.filter(idCliente=request.user.id).values('idProduto'))})
 
 
