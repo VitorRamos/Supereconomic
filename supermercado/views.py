@@ -84,7 +84,7 @@ def cadastroDono(request):
         auth.models.User.objects.filter(id=donoDeletar.idEmpresario.id).delete()
         if Dono.objects.filter(idSupermercado=donoDeletar.idSupermercado.idSupermercado).count() == 0:
             Produto.objects.filter(idProduto__in=
-            Possui.objects.filter(idSupermercado=donoDeletar.idSupermercado).values_list('idProduto')).delete()
+                                   Possui.objects.filter(idSupermercado=donoDeletar.idSupermercado).values_list('idProduto')).delete()
             Supermercado.objects.filter(idSupermercado=donoDeletar.idSupermercado.idSupermercado).delete()
         donoDeletar.delete()
 
@@ -98,8 +98,8 @@ def cadastroDono(request):
                 user.groups.add(grupo)
                 user.save()
                 supermercado= Supermercado.objects.get_or_create(
-                               nome=form.cleaned_data.get('nomeSupermercado'),
-                               localizacao=form.cleaned_data.get('localizacao'))[0]
+                    nome=form.cleaned_data.get('nomeSupermercado'),
+                    localizacao=form.cleaned_data.get('localizacao'))[0]
 
                 dono = Dono(idEmpresario=user,
                             idSupermercado=supermercado,
@@ -161,9 +161,11 @@ def favoritos(request):
         Favorito.objects.filter(idProduto=request.POST.get('deletar')).delete()
 
     dadosProd = Possui.objects.filter(idProduto__in=Favorito.objects.filter(
-                                                    idCliente=request.user).values_list('idProduto'))
+        idCliente=request.user).values_list('idProduto'))
     return render(request, 'favoritos.html', {'prodFavorito': dadosProd})
 
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Clientes').exists() == True)
 def carrinho(request):
     if request.method == 'POST' and 'deletar' in request.POST:
         Carrinho.objects.filter(idProduto=request.POST.get('deletar')).delete()
@@ -176,8 +178,8 @@ def carrinho(request):
         prods = Possui.objects.filter(idProduto__in=Carrinho.objects.all().values_list('idProduto'))
         for x in range(0, Carrinho.objects.all().count()):
             TotalCarrinho= TotalCarrinho+prods[x].preco*qnt[x]
-        # TotalCarrinho= Possui.objects.filter(
-        # idProduto__in=Carrinho.objects.all().values_list('idProduto')).aggregate(total=Sum('preco')).get('total')
+            # TotalCarrinho= Possui.objects.filter(
+            # idProduto__in=Carrinho.objects.all().values_list('idProduto')).aggregate(total=Sum('preco')).get('total')
     return render(request, 'carrinho.html', {'prodCarrinho': dadosProd, 'TotalCarrinho':TotalCarrinho})
 
 @login_required
@@ -189,7 +191,7 @@ def pesquisa(request):
 
     if request.method == 'GET' and 'buscaSimples' in request.GET:
         pesquisas = Possui.objects.filter(idProduto__in=Produto.objects.filter(
-        nome__icontains=request.GET.get('buscaNome'))).order_by("idProduto__nome")
+            nome__icontains=request.GET.get('buscaNome'))).order_by("idProduto__nome")
 
     if request.method == 'POST' and 'favoritar' in request.POST:
         favoritos = request.POST.getlist('prodSel')

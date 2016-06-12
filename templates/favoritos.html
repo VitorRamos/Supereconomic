@@ -23,12 +23,16 @@
                         {% for produto in prodFavorito %}
                             <tr>
                                 <td>{{produto.idProduto.nome}}</td>
-                                <td>{{produto.idProduto.tipo}}</td>
+                                <td>{% if produto.idProduto.tipo == "[u'eletronico']" %} Eletronico {% endif %}
+                                    {% if produto.idProduto.tipo == "[u'alimento']"%} Alimento {% endif %}
+                                    {% if produto.idProduto.tipo == "[u'limpeza']"%} Limpeza {% endif %}
+                                    {% if produto.idProduto.tipo == "[u'brinquedo']"%} Brinquedo  {% endif %}
+                                </td>
                                 <td>{{produto.idProduto.marca}}</td>
                                 <td>{{produto.idSupermercado.nome}}</td>
                                 <td>{{produto.preco}}</td>
                                 <td><button type="submit" value="{{ produto.idProduto.idProduto }}"
-                                            class="glyphicon glyphicon-remove" name="deletar"></button></td>
+                                            class="btn btn-danger glyphicon glyphicon-remove" name="deletar"></button></td>
                             </tr>
                         {% endfor %}
                         </tbody>
