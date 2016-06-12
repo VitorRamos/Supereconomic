@@ -8,7 +8,7 @@ from forms import LoginForm, CadastroForm, CadastroDono, CadastroProd
 from models import Dono, Supermercado, Favorito, Possui, Produto
 from supermercado.models import Carrinho
 
-from django.db.models import Sum
+# from django.db.models import Sum
 
 def index(request):
     if request.user.is_authenticated():

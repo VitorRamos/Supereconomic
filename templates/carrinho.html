@@ -10,6 +10,7 @@
                 <thead>
                 <tr>
                     <th>Produto</th>
+                    <th>Tipo</th>
                     <th>Marca</th>
                     <th>Supermercado</th>
                     <th>Preco</th>
@@ -24,6 +25,7 @@
                     {% for produto in prodCarrinho %}
                         <tr>
                             <td>{{produto.idProduto.nome}}</td>
+                            <td>{{produto.idProduto.tipo}}</td>
                             <td>{{produto.idProduto.marca}}</td>
                             <td>{{produto.idSupermercado.nome}}</td>
                             <td>{{produto.preco}}</td>
@@ -37,6 +39,7 @@
                         <td></td>
                         <td></td>
                         <td>{{ TotalCarrinho }}</td>
+                        <td></td>
                         <td></td>
                         <td><button type="submit" name="calcular">Calcular</button></td>
                     </tr>

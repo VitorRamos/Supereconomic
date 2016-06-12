@@ -29,6 +29,7 @@
                     <tr>
                         <th></th>
                         <th>Produto</th>
+                        <th>Tipo</th>
                         <th>Marca</th>
                         <th>Supermercado</th>
                         <th>Preco</th>
@@ -41,6 +42,7 @@
                         <tr>
                             <td><input type="checkbox" value="{{ produto.idProduto.idProduto }}" name="produtosDeletar"></td>
                             <td>{{produto.idProduto.nome}}</td>
+                            <td>{{produto.idProduto.tipo}}</td>
                             <td>{{produto.idProduto.marca}}</td>
                             <td>{{produto.idSupermercado.nome}}</td>
                             <td>R$ {{produto.preco}}</td>

@@ -29,12 +29,6 @@
             </section>
         </div>
     </div>
-            <h3 class="tittlePage">Cadastrar Dono</h3>
-            <form class="text-center margin-top5px" role="form" action="" method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" name="cadastrar" class="btn btn-success">Cadastrar</button>
-            </form>
         <form method="POST">
             {% csrf_token %}
             <table class="table">

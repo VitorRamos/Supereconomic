@@ -20,6 +20,7 @@
                         <th></th>
                         <th></th>
                         <th>Produto</th>
+                        <th>Tipo</th>
                         <th>Marca</th>
                         <th>Supermercado</th>
                         <th>Preco</th>
@@ -35,6 +36,7 @@
                                               "glyphicon glyphicon-star"
                                             {% else %} "" {% endif %}aria-hidden="true" ></span></td>
                             <td>{{produto.idProduto.nome}}</td>
+                            <td>{{produto.idProduto.tipo}}</td>
                             <td>{{produto.idProduto.marca}}</td>
                             <td>{{produto.idSupermercado.nome}}</td>
                             <td>{{produto.preco}}</td>
