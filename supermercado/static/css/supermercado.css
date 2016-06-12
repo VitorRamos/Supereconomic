@@ -66,3 +66,9 @@ html,body {
     color: #777;
     text-align: left
 }
+.margin-bottom15px{
+    margin-bottom: 15px!important;
+}
+.colorStar{
+    color: #CCC926;
+}

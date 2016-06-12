@@ -5,76 +5,77 @@
         <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-lg-offset-2 col-xs-offset-2 col-sm-offset-2 col-md-offset-2">
             <h2 class="tittlePage">Produtos</h2>
             <div class="conteudo">
-                <form method="GET">
-                    {% csrf_token %}
-                    <input type="text" name="buscaNome">
-                    <button type="submit" name="buscaSimples"><i class="glyphicon glyphicon-search"></i></button>
-                </form>
-
+                <div class="col-lg-6 col-lg-offset-3">
+                    <form method="GET">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        {#                    <input type="text" name="buscaNome" placeholder="Busca...">#}
+                        <button class="btn btn-primary pull-right" type="submit" name="buscaAvancada"><i class="glyphicon glyphicon-search"></i></button>
+                    </form>
+                </div>
+                <div class="row"></div>
                 <form method="POST">
                     {% csrf_token %}
-                    <table class="table">
-                        <div class="caption">Resultado da pesquisa</div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <div class="caption">Resultado da pesquisa</div>
 
-                        {% for aviso in aviso_sucess %}
-                            <div class="alert alert-success" role="alert">
-                                <p>{{aviso}}</p>
-                            </div>
-                        {%  endfor %}
+                            {% for aviso in aviso_sucess %}
+                                <div class="alert alert-success" role="alert">
+                                    <p>{{aviso}}</p>
+                                </div>
+                            {%  endfor %}
 
-                        {% for aviso in aviso_error %}
-                            <div class="alert alert-danger" role="alert">
-                                <p>{{aviso}}</p>
-                            </div>
-                        {%  endfor %}
+                            {% for aviso in aviso_error %}
+                                <div class="alert alert-danger" role="alert">
+                                    <p>{{aviso}}</p>
+                                </div>
+                            {%  endfor %}
 
-                        <div class="form-group">
-                            <button name="favoritar" type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-star"></i></button>
-                            {% load staticfiles %}
-                            <button name="carrinho" type="submit" class="btn btn-success padding-0px"><img src="{% static 'img/add-to-cartWhite.png' %}" width="30px"></button>
-                        </div>
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th>Produto</th>
-                            <th>Tipo</th>
-                            <th>Marca</th>
-                            <th>Supermercado</th>
-                            <th>Preco</th>
-                            {#                <th>Quantidade</th>#}
-                        </tr>
-                        </thead>
-
-                        <tbody>
-                        {% for produto in pesquisa %}
+                            <thead>
                             <tr>
-                                <td><input type="checkbox" value="{{ produto.idProduto.idProduto }}"  name="prodSel"></td>
-                                <td>
-                                    <span class={% if produto in favoritos %}"glyphicon glyphicon-star"{% else %}""{% endif %}aria-hidden="true"></span>
-                                </td>
-                                <td>{{produto.idProduto.nome}}</td>
-                                <td>{% if produto.idProduto.tipo == "[u'eletronico']" %} Eletronico {% endif %}
-                                    {% if produto.idProduto.tipo == "[u'alimento']"%} Alimento {% endif %}
-                                    {% if produto.idProduto.tipo == "[u'limpeza']"%} Limpeza {% endif %}
-                                    {% if produto.idProduto.tipo == "[u'brinquedo']"%} Brinquedo  {% endif %}
-                                </td>
-                                <td>{{produto.idProduto.marca}}</td>
-                                <td>{{produto.idSupermercado.nome}}</td>
-                                <td>{{produto.preco}}</td>
+                                <th></th>
+                                <th></th>
+                                <th>Produto</th>
+                                <th>Tipo</th>
+                                <th>Marca</th>
+                                <th>Supermercado</th>
+                                <th>Preco</th>
+                                {#                <th>Quantidade</th>#}
                             </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+
+                            <tbody>
+                            {% for produto in pesquisa %}
+                                <tr>
+                                    <td><input type="checkbox" value="{{ produto.idProduto.idProduto }}"  name="prodSel"></td>
+                                    <td>
+                                        <span class={% if produto in favoritos %}"glyphicon glyphicon-star colorStar"{% else %}""{% endif %}aria-hidden="true"></span>
+                                    </td>
+                                    <td>{{produto.idProduto.nome}}</td>
+                                    <td>{% if produto.idProduto.tipo == "[u'eletronico']" %} Eletronico {% endif %}
+                                        {% if produto.idProduto.tipo == "[u'alimento']"%} Alimento {% endif %}
+                                        {% if produto.idProduto.tipo == "[u'limpeza']"%} Limpeza {% endif %}
+                                        {% if produto.idProduto.tipo == "[u'brinquedo']"%} Brinquedo  {% endif %}
+                                    </td>
+                                    <td>{{produto.idProduto.marca}}</td>
+                                    <td>{{produto.idSupermercado.nome}}</td>
+                                    <td>{{produto.preco}}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                     <div class="form-group">
                         <button name="favoritar" type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-star"></i></button>
                         {% load staticfiles %}
                         <button name="carrinho" type="submit" class="btn btn-success padding-0px"><img src="{% static 'img/add-to-cartWhite.png' %}" width="30px"></button>
                     </div>
                 </form>
-
             </div>
+
         </div>
+    </div>
     </div>
     </div>
 {% endblock %}

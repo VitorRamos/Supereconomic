@@ -7,36 +7,38 @@
             <section class="conteudo">
                 <form method="POST">
                     {% csrf_token %}
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Produto</th>
-                            <th>Tipo</th>
-                            <th>Marca</th>
-                            <th>Supermercado</th>
-                            <th>Preco</th>
-                            <th>Remover</th>
-                        </tr>
-                        </thead>
-
-                        <tbody>
-                        {% for produto in prodFavorito %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
                             <tr>
-                                <td>{{produto.idProduto.nome}}</td>
-                                <td>{% if produto.idProduto.tipo == "[u'eletronico']" %} Eletronico {% endif %}
-                                    {% if produto.idProduto.tipo == "[u'alimento']"%} Alimento {% endif %}
-                                    {% if produto.idProduto.tipo == "[u'limpeza']"%} Limpeza {% endif %}
-                                    {% if produto.idProduto.tipo == "[u'brinquedo']"%} Brinquedo  {% endif %}
-                                </td>
-                                <td>{{produto.idProduto.marca}}</td>
-                                <td>{{produto.idSupermercado.nome}}</td>
-                                <td>{{produto.preco}}</td>
-                                <td><button type="submit" value="{{ produto.idProduto.idProduto }}"
-                                            class="btn btn-danger glyphicon glyphicon-remove" name="deletar"></button></td>
+                                <th>Produto</th>
+                                <th>Tipo</th>
+                                <th>Marca</th>
+                                <th>Supermercado</th>
+                                <th>Preco</th>
+                                <th>Remover</th>
                             </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+
+                            <tbody>
+                            {% for produto in prodFavorito %}
+                                <tr>
+                                    <td>{{produto.idProduto.nome}}</td>
+                                    <td>{% if produto.idProduto.tipo == "[u'eletronico']" %} Eletronico {% endif %}
+                                        {% if produto.idProduto.tipo == "[u'alimento']"%} Alimento {% endif %}
+                                        {% if produto.idProduto.tipo == "[u'limpeza']"%} Limpeza {% endif %}
+                                        {% if produto.idProduto.tipo == "[u'brinquedo']"%} Brinquedo  {% endif %}
+                                    </td>
+                                    <td>{{produto.idProduto.marca}}</td>
+                                    <td>{{produto.idSupermercado.nome}}</td>
+                                    <td>{{produto.preco}}</td>
+                                    <td><button type="submit" value="{{ produto.idProduto.idProduto }}"
+                                                class="btn btn-danger glyphicon glyphicon-remove" name="deletar"></button></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </form>
             </section>
         </div>

@@ -23,38 +23,40 @@
 
                 <form method="POST">
                     {% csrf_token %}
-                    <table class="table">
-                        <caption>Produtos Cadastrados</caption>
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th>Produto</th>
-                            <th>Tipo</th>
-                            <th>Marca</th>
-                            <th>Supermercado</th>
-                            <th>Preco</th>
-                            <th>Quantidade</th>
-                        </tr>
-                        </thead>
-
-                        <tbody>
-                        {% for produto in produtos %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption>Produtos Cadastrados</caption>
+                            <thead>
                             <tr>
-                                <td><input type="checkbox" value="{{ produto.idProduto.idProduto }}" name="produtosDeletar"></td>
-                                <td>{{produto.idProduto.nome}}</td>
-                                <td>{% if produto.idProduto.tipo == "[u'eletronico']" %} Eletronico {% endif %}
-                                    {% if produto.idProduto.tipo == "[u'alimento']"%} Alimento {% endif %}
-                                    {% if produto.idProduto.tipo == "[u'limpeza']"%} Limpeza {% endif %}
-                                    {% if produto.idProduto.tipo == "[u'brinquedo']"%} Brinquedo  {% endif %}
-                                </td>
-                                <td>{{produto.idProduto.marca}}</td>
-                                <td>{{produto.idSupermercado.nome}}</td>
-                                <td>R$ {{produto.preco}}</td>
-                                <td>{{produto.quantidade}}</td>
+                                <th></th>
+                                <th>Produto</th>
+                                <th>Tipo</th>
+                                <th>Marca</th>
+                                <th>Supermercado</th>
+                                <th>Preco</th>
+                                <th>Quantidade</th>
                             </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+
+                            <tbody>
+                            {% for produto in produtos %}
+                                <tr>
+                                    <td><input type="checkbox" value="{{ produto.idProduto.idProduto }}" name="produtosDeletar"></td>
+                                    <td>{{produto.idProduto.nome}}</td>
+                                    <td>{% if produto.idProduto.tipo == "[u'eletronico']" %} Eletronico {% endif %}
+                                        {% if produto.idProduto.tipo == "[u'alimento']"%} Alimento {% endif %}
+                                        {% if produto.idProduto.tipo == "[u'limpeza']"%} Limpeza {% endif %}
+                                        {% if produto.idProduto.tipo == "[u'brinquedo']"%} Brinquedo  {% endif %}
+                                    </td>
+                                    <td>{{produto.idProduto.marca}}</td>
+                                    <td>{{produto.idSupermercado.nome}}</td>
+                                    <td>R$ {{produto.preco}}</td>
+                                    <td>{{produto.quantidade}}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                     <button name="deletar" type="submit" class="btn btn-primary">Deletar</button>
                 </form>
                 {% for aviso in avisos %}

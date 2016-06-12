@@ -6,51 +6,53 @@
             <h2 class="tittlePage">Carrinho</h2>
 
             <section class="conteudo">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Produto</th>
-                        <th>Tipo</th>
-                        <th>Marca</th>
-                        <th>Supermercado</th>
-                        <th>Quantidade</th>
-                        <th>Preco(unit)</th>
-                        <th>Remover</th>
-                    </tr>
-                    </thead>
-
-                    <form method="POST">
-                        {% csrf_token %}
-                        <tbody>
-                        {% for produto in prodCarrinho %}
-                            <tr>
-                                <td>{{produto.idProduto.nome}}</td>
-                                <td>{% if produto.idProduto.tipo == "[u'eletronico']" %} Eletronico {% endif %}
-                                    {% if produto.idProduto.tipo == "[u'alimento']"%} Alimento {% endif %}
-                                    {% if produto.idProduto.tipo == "[u'limpeza']"%} Limpeza {% endif %}
-                                    {% if produto.idProduto.tipo == "[u'brinquedo']"%} Brinquedo  {% endif %}
-                                </td>
-                                <td>{{produto.idProduto.marca}}</td>
-                                <td>{{produto.idSupermercado.nome}}</td>
-                                <td><input name="quantidade" class="form-control form-control-2" type="number" typeof="float" value="1" min="1"></td>
-                                <td>{{produto.preco}}</td>
-                                <td><button type="submit" value="{{ produto.idProduto.idProduto }}"
-                                            class="btn btn-danger glyphicon glyphicon-remove" name="deletar"></button></td>
-                            </tr>
-                        {% endfor %}
-
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td><br><strong class="pull-right">Total: </strong></td>
-                            <td><br>{{ TotalCarrinho }}</td>
-                            <td><br><button class="btn btn-success" type="submit" name="calcular">Calcular</button></td>
+                            <th>Produto</th>
+                            <th>Tipo</th>
+                            <th>Marca</th>
+                            <th>Supermercado</th>
+                            <th>Quantidade</th>
+                            <th>Preco(unit)</th>
+                            <th>Remover</th>
                         </tr>
-                        </tbody>
-                    </form>
-                </table>
+                        </thead>
+
+                        <form method="POST">
+                            {% csrf_token %}
+                            <tbody>
+                            {% for produto in prodCarrinho %}
+                                <tr>
+                                    <td>{{produto.idProduto.nome}}</td>
+                                    <td>{% if produto.idProduto.tipo == "[u'eletronico']" %} Eletronico {% endif %}
+                                        {% if produto.idProduto.tipo == "[u'alimento']"%} Alimento {% endif %}
+                                        {% if produto.idProduto.tipo == "[u'limpeza']"%} Limpeza {% endif %}
+                                        {% if produto.idProduto.tipo == "[u'brinquedo']"%} Brinquedo  {% endif %}
+                                    </td>
+                                    <td>{{produto.idProduto.marca}}</td>
+                                    <td>{{produto.idSupermercado.nome}}</td>
+                                    <td><input name="quantidade" class="form-control form-control-2" type="number" typeof="float" value="1" min="1" max="1000"></td>
+                                    <td>{{produto.preco}}</td>
+                                    <td><button type="submit" value="{{ produto.idProduto.idProduto }}"
+                                                class="btn btn-danger glyphicon glyphicon-remove" name="deletar"></button></td>
+                                </tr>
+                            {% endfor %}
+
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><br><strong class="pull-right">Total: </strong></td>
+                                <td><br>{{ TotalCarrinho }}</td>
+                                <td><br><button class="btn btn-success" type="submit" name="calcular">Calcular</button></td>
+                            </tr>
+                            </tbody>
+                        </form>
+                    </table>
+                </div>
             </section>
         </div>
     </div>
